@@ -19,11 +19,11 @@ O Vite utiliza base /Conquest-nuvem/ no build de Pages. No contêiner Docker a b
 
 1. Provisionar VPS Linux na Oracle Cloud (OCI).
 2. Configurar IP público, firewall, SSH seguro e regras de rede mínimas.
-3. Instalar Docker e Portainer com a documentação oficial, sem deixar o painel administrativo exposto.
+3. Instalar Docker e Portainer com a documentação oficial, sem deixar o painel administrativo exposto. Siga o roteiro detalhado em infra/oci/README.md.
 4. Validar o job **container** do GitHub Actions: deverá construir imagem e publicá-la em **ghcr.io/ruan-levi/conquest-nuvem:latest**.
 5. Tornar o pacote GHCR público ou autenticar o Portainer para permitir download.
 6. Importar a stack a partir do arquivo docker-compose.yml.
-7. Usar um proxy reverso com HTTPS na frente do contêiner; evite expor a porta 8080 diretamente à internet.
+7. Usar proxy reverso HTTPS no host (exemplo Caddy em infra/oci/Caddyfile.example); a porta 8080 já está limitada a 127.0.0.1 no Compose.
 8. Abrir o endereço público, executar o jogo, observar os logs e testar os serviços Nhost.
 9. Preparar a atualização automatizada: habilitar GitOps ou webhook da Stack/contêiner, conforme a edição e configuração do Portainer.
 
@@ -35,7 +35,7 @@ Somente depois de instalar a VPS e configurar o Portainer:
 - Em **Variables**, criar **ENABLE_OCI_DEPLOY** com valor **true**.
 - Validar que o job container publicou a nova imagem **antes** de tentar o webhook.
 
-O job deploy-oci ficará desabilitado até a variável ser configurada. O webhook só funciona se a sua edição e configuração do Portainer oferecerem esse recurso. Caso contrário, substitua a etapa por mecanismo GitOps compatível.
+O job deploy-oci ficará desabilitado até a variável ser configurada. O webhook direto de stack requer Portainer Business Edition. No Portainer Community Edition, usar stack baseada em Git e GitOps polling (com repull + force redeploy, quando disponíveis). O job de GitHub não comprova automaticamente que o polling concluiu o deploy.
 
 ## D. Demonstração acadêmica
 

@@ -1,88 +1,68 @@
-# Integração Nhost — instruções do Conquest
+# Integracao Nhost — Conquest (guia de instalacao real)
 
-**Estado atual:** código de autenticação e operações GraphQL preparado, ainda sem configuração em um projeto Nhost real.
+**Estado:** SDK e interface integrados em codigo; falta configurar projeto Nhost, tabela, permissoes e Storage no painel. A execucao real nao foi comprovada.
 
-## 1. Criar projeto e configurar o frontend
+## Passo 1 — Configurar o cliente
 
-Acesse https://app.nhost.io e crie o projeto. Anote somente os identificadores públicos **subdomain** e **region**.
+Crie projeto em https://app.nhost.io. Copie APENAS subdomain e region publicos.
+Localmente, preencha VITE_NHOST_SUBDOMAIN e VITE_NHOST_REGION no seu .env.
+Para o GitHub Pages e o GHCR (Docker), defina GitHub Actions Variables
+NHOST_SUBDOMAIN e NHOST_REGION e reexecute a compilacao.
+O Vite incorpora VITE_* durante o build; elas NAO guardam segredos.
 
-Copie o arquivo .env.example para .env e informe os valores mostrados no painel:
+Configure no Nhost URLs autorizadas de redirecionamento para os dominios
+reais usados no GitHub Pages e na VPS Oracle. O cadastro pode exigir confirmacao
+por e-mail: depois da verificacao, o usuario entra com email/senha.
 
-~~~dotenv
-VITE_NHOST_SUBDOMAIN=seu-subdominio
-VITE_NHOST_REGION=sua-regiao
-~~~
+## Passo 2 — Database + GraphQL com Hasura
 
-Reinicie o servidor Vite e clique em **Conta / Ranking** no jogo.
+Execute nhost/migrations/001_conquest_scores.sql no SQL Editor.
+No Hasura, faca Track da tabela public.conquest_scores.
 
-**Proibido:** incluir admin secret, tokens privados ou senhas em variáveis VITE_*.
+Permissoes para role **user**:
+- INSERT: somente colunas score, correct_answers, total_answers, completed;
+  defina preset user_id = X-Hasura-User-Id; usuario nao pode preencher user_id.
+- SELECT: filtro user_id = X-Hasura-User-Id; liberar id, score,
+  correct_answers, total_answers, completed, created_at.
+- UPDATE e DELETE: negar.
+- Roles **public/anonymous**: negar SELECT, INSERT, UPDATE, DELETE.
 
-## 2. Esquema de dados proposto
+O jogo mostra o historico **individual**, nao ranking publico. A pontuacao
+calculada no navegador e manipulavel pelo proprio jogador. Nao usar para
+ranking competitivo sem validacao de partida em backend confiavel.
 
-No SQL Editor do Nhost, execute após confirmar os nomes e permissões do ambiente:
+## Passo 3 — Storage
 
-~~~sql
-CREATE TABLE IF NOT EXISTS public.conquest_scores (
-  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
-  user_id uuid NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
-  score integer NOT NULL CHECK (score BETWEEN 0 AND 100000),
-  correct_answers integer NOT NULL CHECK (correct_answers BETWEEN 0 AND 100),
-  total_answers integer NOT NULL CHECK (total_answers BETWEEN correct_answers AND 300),
-  completed boolean NOT NULL DEFAULT false,
-  created_at timestamptz NOT NULL DEFAULT now()
-);
-CREATE INDEX IF NOT EXISTS conquest_scores_top
-  ON public.conquest_scores (score DESC, created_at ASC);
-~~~
+Crie no Nhost Storage um bucket chamado **personal**. Na tela Permissions:
+- Role user Upload: bucket_id = personal e preset
+  uploaded_by_user_id = X-Hasura-User-Id.
+- Role user Download: bucket_id = personal E uploaded_by_user_id = X-Hasura-User-Id.
+- Role user Delete (se habilitado): mesmos filtros.
+- Role public/anonymous: negar upload, leitura e exclusao.
 
-Faça Track da tabela na interface Hasura.
+A UI Conta/Ranking faz upload de PNG, JPEG e WebP ate 2 MB no bucket personal.
+O id do arquivo devolvido pelo SDK pode ser conferido no dashboard.
 
-## 3. Política de segurança Hasura
+## Passo 4 — Realtime
 
-Para o papel **user** autenticado:
+Na conta autenticada, o jogo abre WebSocket graphql-transport-ws
+para subscription conquest_scores, sujeita as mesmas permissoes de SELECT.
+Teste com duas abas na mesma conta: uma nova partida salva em uma aba deve
+aparecer na outra sem recarregar. O botao Atualizar Dados usa GraphQL query
+como fallback, sem comprovar realtime.
 
-1. **INSERT:** permitir somente campos score, correct_answers, total_answers e completed; definir user_id automaticamente com o preset de variável de sessão **X-Hasura-User-Id**.
-2. **SELECT do jogador:** filtro por user_id = X-Hasura-User-Id.
-3. **UPDATE/DELETE:** negar aos jogadores.
-4. **ANONYMOUS:** negar inserção de pontuação.
-5. Para o ranking público, publicar uma **view segura** com score, acertos e data, sem e-mail nem outros dados pessoais.
+## Prova dos quatro recursos BaaS
 
-Sem uma view de ranking pública, a consulta de ranking em src/services/nhost.js poderá ver somente linhas autorizadas para o usuário atual.
+1. Auth: conta, verificacao, login e logout.
+2. Banco + GraphQL: grava e consulta de partida, visivel no Postgres/Hasura.
+3. Storage: arquivo privado aparece no bucket personal.
+4. Realtime: duas abas recebem atualizacoes sem refresh.
 
-## 4. Login e e-mail
+Teste duas contas diferentes para demonstrar isolamento de registros e arquivos.
+Nao anuncie os quatro recursos como comprovados ate a demo funcionar de fato.
 
-O Nhost costuma exigir verificação de e-mail para novas contas. O usuário pode precisar confirmar o e-mail e depois entrar. O fluxo completo de redirecionamento/PKCE deve ser testado após configurar Auth e domínio.
-
-Configure os domínios permitidos de acordo com as URLs reais:
-- https://ruan-levi.github.io
-- https://ruan-levi.github.io/Conquest-nuvem/
-- Endereço HTTPS da VPS Oracle, quando houver.
-
-## 5. GitHub Actions
-
-Em GitHub → Settings → Secrets and variables → Actions → Variables, criar:
-
-- NHOST_SUBDOMAIN
-- NHOST_REGION
-
-O workflow os usa para compilar as versões Pages e Docker. São identificadores públicos; **nunca** publique credenciais de administrador.
-
-## 6. Critério dos quatro recursos BaaS
-
-| Recurso | Situação |
-|---|---|
-| Auth: conta/login/sessão | Preparado, testar com conta |
-| PostgreSQL: jogadores/partidas/pontuação | Esquema proposto, aplicar |
-| GraphQL: query e mutation | Código preparado, configurar Hasura |
-| Storage: avatar | **A implementar** |
-| Realtime: ranking/partida sincronizada | **A implementar** |
-
-**A exigência acadêmica é apresentar pelo menos 4 funcionalidades BaaS funcionando, não apenas declarar essas tecnologias.**
-
-## 7. Segurança das pontuações
-
-Nesta versão, a pontuação do jogo é calculada no navegador. Um usuário pode forjar uma requisição GraphQL ou editar o JavaScript. Os limites SQL e permissões Hasura ajudam a restringir operações, **mas não comprovam que uma partida realmente ocorreu**.
-
-Antes de um ranking competitivo verdadeiro, implemente validação de partida e respostas em Nhost Functions ou outro backend seguro.
-
-Documentação: https://docs.nhost.io/reference/javascript/nhost-js/main
+Documentacao oficial:
+- https://docs.nhost.io/reference/javascript/nhost-js/main
+- https://docs.nhost.io/products/auth/sign-in-email-password
+- https://docs.nhost.io/products/storage/permissions
+- https://docs.nhost.io/products/graphql

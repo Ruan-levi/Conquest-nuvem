@@ -81,6 +81,9 @@ docker-compose.yml
 
 ## ☁️ Integrações em nuvem
 
+**Atualização 11/11/2026 (branch de integração):** UI Conta/Ranking inclui histórico individual de pontuações via GraphQL, upload privado no Nhost Storage e subscription GraphQL Realtime; a migração SQL e permissões ainda precisam ser aplicadas num projeto real. Para Oracle/Portainer, consulte infra/oci/README.md. Sem credenciais/instância, não há deploy real na VPS.
+
+
 - **Nhost:** serviço opcional de autenticação e GraphQL. Exige configurar projeto, tabela e políticas Hasura.
 - **GitHub Pages:** site estático após ativar o workflow em Settings → Pages.
 - **GHCR:** imagem Docker automatizada após testes bem-sucedidos.
