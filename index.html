@@ -101,6 +101,17 @@
       <div class="cloud-actions"><button class="primary-button" type="submit" data-action="login">ENTRAR</button><button type="button" class="secondary-button" id="cloud-register">CRIAR CONTA</button></div>
     </form>
     <div id="cloud-user" class="hidden"><p id="cloud-user-name"></p><button id="cloud-logout" class="secondary-button">SAIR DA CONTA</button></div>
+    <section id="cloud-dashboard" class="cloud-dashboard hidden" aria-live="polite">
+      <h3>Minhas partidas no Nhost</h3>
+      <p id="cloud-realtime-status">Sincronizacao nao iniciada.</p>
+      <ol id="cloud-score-list"><li>Carregando partidas...</li></ol>
+      <button id="cloud-refresh-scores" class="secondary-button" type="button">ATUALIZAR DADOS</button>
+      <h3>Storage: comprovante da aventura</h3>
+      <label for="cloud-proof">Enviar imagem privada (PNG, JPEG ou WebP, ate 2 MB)</label>
+      <input type="file" id="cloud-proof" accept="image/png,image/jpeg,image/webp"/>
+      <button id="cloud-upload-proof" class="secondary-button" type="button">ENVIAR AO NHOST</button>
+      <p id="cloud-storage-status" role="status"></p>
+    </section>
     <p class="cloud-message" id="cloud-message"></p>
   </div></div>
   <button id="cloud-open" class="cloud-open" aria-label="Abrir conexão Nhost" title="Nhost: conta e ranking">☁ Conta / Ranking</button>
