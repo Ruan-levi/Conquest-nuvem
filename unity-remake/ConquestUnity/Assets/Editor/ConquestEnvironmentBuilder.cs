@@ -724,6 +724,18 @@ namespace Conquest.UnityRemake.Editor
             sun.shadows = LightShadows.Soft;
             sun.shadowStrength = .79f;
             RenderSettings.sun = sun;
+            Shader skyShader = Shader.Find("Skybox/Procedural");
+            if (skyShader)
+            {
+                Material sky = new Material(skyShader);
+                sky.name = "Skybox_Daylight";
+                sky.SetColor("_SkyTint", new Color(.40f, .57f, .78f));
+                sky.SetColor("_GroundColor", new Color(.32f, .36f, .35f));
+                sky.SetFloat("_AtmosphereThickness", 1.05f);
+                sky.SetFloat("_Exposure", 1.15f);
+                AssetDatabase.CreateAsset(sky, Generated + "/Skybox_Daylight.mat");
+                RenderSettings.skybox = sky;
+            }
             QualitySettings.shadowDistance = 100f;
 
             RenderSettings.ambientMode = AmbientMode.Flat;
