@@ -1,6 +1,6 @@
 # CONQUEST — Plano do remake Unity (Windows)
 
-**Status:** planejamento e auditoria técnica. **Nenhum projeto Unity foi criado, aberto ou compilado nesta etapa.**
+**Status atualizado em 11/11/2026:** estrutura Unity 6.3 LTS, scripts C# e gerador do cenário URP foram adicionados em ConquestUnity/. O Editor ainda não foi executado; a cena, o build e os gráficos exigem validação real no computador.
 
 ## 0. Fonte de verdade e bloqueios
 

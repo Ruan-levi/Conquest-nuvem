@@ -6,6 +6,15 @@ Projeto web em **Vite + Babylon.js**, organizado para **Nhost, GitHub Pages, Doc
 
 > **Status real:** código de reconstrução publicado. **10 testes Vitest, compilação Vite, build Docker e deploy personalizado do GitHub Pages passaram no GitHub Actions**. Por segurança, confira em Settings → Pages se a fonte é GitHub Actions (há também um fluxo Jekyll automático da branch); Nhost e Oracle Cloud ainda precisam de contas/configuração. O modo multiplayer online não está implementado nesta versão.
 
+## 🏰 Projeto Unity 6.3 LTS (prototipo visual URP)
+
+Existe uma trilha **separada** em [unity-remake/ConquestUnity](unity-remake/ConquestUnity/README.md),
+com scripts Unity C#, gerador de cena 3D de vila medieval, terrenos PBR,
+iluminacao, camera em terceira pessoa e cristais coletaveis. A cena precisa
+ser **gerada e validada no Unity Editor** por Tools > Conquest > Gerar cenario 3D URP.
+A estrutura Unity ainda nao foi compilada em Unity nem convertida em executavel Windows;
+a jogabilidade academica e o Nhost/Oracle continuam na aplicacao web.
+
 ## 🎮 Acessar e executar
 
 - **Código-fonte:** https://github.com/Ruan-levi/Conquest-nuvem

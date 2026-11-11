@@ -20,3 +20,11 @@ Não copiar/redistribuir assets sujeitos a restrições em repositório público
 
 Fonte de licença Quaternius: https://quaternius.com/packs/medievalvillagemegakit.html
 Fonte de uso Mixamo: https://helpx.adobe.com/creative-cloud/faq/mixamo-faq.html
+
+## Prototipo procedural URP (11/11/2026)
+
+A estrutura em `ConquestUnity/Assets` utiliza código C# e primitivas geométricas
+proceduralmente criadas para terreno, vila, vegetação, personagem provisório e efeitos.
+**Nenhum modelo 3D, música, textura ou rig de terceiros foi importado nesta entrega.**
+As referências a bibliotecas externas no plano são apenas possibilidades futuras,
+sujeitas a licença e atribuição quando forem efetivamente utilizadas.
