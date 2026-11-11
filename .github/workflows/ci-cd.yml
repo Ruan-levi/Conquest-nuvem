@@ -1,0 +1,93 @@
+name: Conquest - build, testes e publicacao
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    name: Testes e compilacao
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm install --no-audit --no-fund
+      - run: npm test
+      - run: npm run build
+
+  pages:
+    name: GitHub Pages
+    needs: verify
+    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm install --no-audit --no-fund
+      - name: Build para GitHub Pages
+        run: npm run build
+        env:
+          GITHUB_PAGES: 'true'
+          VITE_NHOST_SUBDOMAIN: ${{ vars.NHOST_SUBDOMAIN }}
+          VITE_NHOST_REGION: ${{ vars.NHOST_REGION }}
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v4
+        with:
+          path: ./dist
+      - name: Deploy Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+
+  container:
+    name: Publicar imagem Docker GHCR
+    needs: verify
+    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: docker/setup-buildx-action@v3
+      - uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: true
+          tags: ghcr.io/ruan-levi/conquest-nuvem:latest
+          build-args: |
+            VITE_NHOST_SUBDOMAIN=${{ vars.NHOST_SUBDOMAIN }}
+            VITE_NHOST_REGION=${{ vars.NHOST_REGION }}
+
+  deploy-oci:
+    name: Implantar na Oracle com Portainer (opcional)
+    needs: container
+    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main' && vars.ENABLE_OCI_DEPLOY == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Acionar webhook do Portainer
+        env:
+          PORTAINER_WEBHOOK_URL: ${{ secrets.PORTAINER_WEBHOOK_URL }}
+        run: |
+          test -n "$PORTAINER_WEBHOOK_URL" || (echo "Secret do webhook ausente" && exit 1)
+          curl --fail --show-error --silent --max-time 30 -X POST "$PORTAINER_WEBHOOK_URL"
