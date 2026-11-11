@@ -1,11 +1,11 @@
 # Stack para Portainer na VPS OCI.
-# Aplique HTTPS em um proxy reverso antes de expor a aplicação.
+# Porta do jogo somente local no host; configure proxy HTTPS no Ubuntu.
 services:
   conquest:
     image: ghcr.io/ruan-levi/conquest-nuvem:latest
     restart: unless-stopped
     ports:
-      - "8080:80"
+      - "127.0.0.1:8080:80"
     healthcheck:
       test: ["CMD", "wget", "-qO-", "http://127.0.0.1/"]
       interval: 30s
