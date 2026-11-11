@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="theme-color" content="#07161d"/>
+  <meta name="description" content="Conquest: uma aventura 3D sobre Teoria dos Conjuntos, guardiões, cristais e batalhas matemáticas."/>
+  <title>Conquest | Vale dos Conjuntos</title>
+</head>
+<body>
+<div id="app">
+  <canvas id="renderCanvas" aria-label="Cenário tridimensional do jogo Conquest"></canvas>
+  <div id="top-shade"></div>
+  <header class="game-header">
+    <div class="brand"><span class="brand-icon">✦</span><div><b>CONQUEST</b><small>VALE DOS CONJUNTOS</small></div></div>
+    <div class="header-actions">
+      <span id="cloud-status" class="cloud-chip">● Modo local</span>
+      <button class="icon-button" id="audio-button" title="Ligar ou desligar efeitos de som" aria-label="Alternar som">♫</button>
+      <button class="icon-button" id="pause-button" title="Pausar" aria-label="Pausar">Ⅱ</button>
+    </div>
+  </header>
+  <aside id="hud-left" class="hud-left hidden">
+    <div class="hud-stat"><div class="stat-head"><span>❤ VIDA</span><b id="health-text">100 / 100</b></div><div class="bar"><div id="health-fill" class="bar-fill health-fill"></div></div></div>
+    <div class="hud-stat"><div class="stat-head"><span>✦ EXPERIÊNCIA</span><b id="score-text">0 pts</b></div><div class="bar"><div id="score-fill" class="bar-fill score-fill"></div></div></div>
+    <div class="stats-row"><div>✧ <b id="crystal-text">0/3</b><small>Cristais</small></div><div>⚔ <b id="guardian-text">0/3</b><small>Guardiões</small></div><div>✓ <b id="correct-text">0</b><small>Acertos</small></div></div>
+  </aside>
+  <aside id="objective-panel" class="objective-panel hidden" aria-live="polite">
+    <small class="eyebrow">✧ SUA MISSÃO ATUAL</small>
+    <h2 id="objective-title">Converse com Liora</h2>
+    <p id="objective-desc">Encontre a anciã na vila.</p>
+    <div class="objective-bottom"><span id="objective-distance">0 metros</span><span id="objective-stage">ETAPA 1 / 4</span></div>
+    <div id="direction-arrow" class="direction-arrow" aria-hidden="true">➤</div>
+  </aside>
+  <div id="interaction-prompt" class="interaction-prompt hidden"><kbd>E</kbd><span id="interaction-text">Interagir</span></div>
+  <div id="toast" class="toast hidden" role="status"></div>
+  <div class="controls-hint hidden" id="controls-hint"><kbd>W A S D</kbd> Mover <kbd>SHIFT</kbd> Correr <kbd>E</kbd> Interagir <kbd>Q / R</kbd> Girar câmera</div>
+  <div id="mobile-controls" class="mobile-controls hidden">
+    <div class="dpad">
+      <button data-control="w" class="up" aria-label="Andar para frente">▲</button>
+      <button data-control="a" class="left" aria-label="Andar para esquerda">◀</button>
+      <button data-control="s" class="down" aria-label="Andar para trás">▼</button>
+      <button data-control="d" class="right" aria-label="Andar para direita">▶</button>
+    </div>
+    <div class="touch-actions">
+      <button data-control="shift" class="sprint">CORRER</button>
+      <button data-control="e" class="interact">AÇÃO</button>
+    </div>
+  </div>
+
+  <div id="intro-overlay" class="screen-overlay">
+    <div class="intro-backdrop"><div class="glow one"></div><div class="glow two"></div></div>
+    <div class="intro-content">
+      <div class="intro-kicker">UMA AVENTURA DE CONJUNTOS • RPG 3D</div>
+      <h1>CON<span>QUEST</span></h1>
+      <p>Um vale em desequilíbrio. Três guardiões ancestrais. Uma jornada em que <strong>seu conhecimento é sua arma.</strong></p>
+      <div class="intro-features"><span>⚔ Batalhas matemáticas</span><span>◈ Mundo para explorar</span><span>✦ Cristais mágicos</span></div>
+      <button id="start-button" class="primary-button">INICIAR AVENTURA <span>➜</span></button>
+      <div class="intro-help">WASD para mover • Shift para correr • E para interagir</div>
+    </div>
+    <div class="intro-edge">GRUPO 08 · DESENVOLVIMENTO DE SOFTWARE EM NUVEM</div>
+  </div>
+
+  <div id="dialogue-overlay" class="screen-overlay hidden">
+    <div class="dialog-card panel">
+      <div class="npc-emblem">✦</div><div class="eyebrow">A ANCIÃ DO VALE</div><h2>Liora</h2>
+      <p>“Os cristais do conhecimento estão espalhados pelo vale. Reúna os três para despertar os Guardiões. Só então você poderá enfrentar Cael e restaurar o equilíbrio dos conjuntos!”</p>
+      <button id="dialogue-continue" class="primary-button">ACEITAR MISSÃO ➜</button>
+    </div>
+  </div>
+  <div id="battle-overlay" class="screen-overlay hidden">
+    <div class="battle-card panel">
+      <div class="battle-header"><div><div class="eyebrow" id="battle-tag">GUARDIÃO</div><h2 id="battle-name">Guardião da União</h2></div><button id="battle-close" class="icon-button" title="Recuar da batalha">×</button></div>
+      <div class="battle-health"><span>ENERGIA DO GUARDIÃO</span><b id="enemy-health-label">2 / 2</b></div>
+      <div class="bar enemy-bar"><div id="enemy-health-fill" class="bar-fill"></div></div>
+      <div class="question-label">DESAFIO DE TEORIA DOS CONJUNTOS</div>
+      <h3 id="battle-question"></h3>
+      <div id="answer-grid" class="answer-grid"></div>
+      <div id="battle-feedback" class="battle-feedback" aria-live="polite">Escolha uma resposta para atacar.</div>
+    </div>
+  </div>
+  <div id="end-overlay" class="screen-overlay hidden">
+    <div class="end-card panel"><div class="end-symbol" id="end-symbol">✦</div><small class="eyebrow" id="end-kicker">JORNADA CONCLUÍDA</small><h2 id="end-title">O Vale foi salvo!</h2>
+      <p id="end-description">Seu conhecimento restaurou o equilíbrio.</p>
+      <div class="end-stat-row"><div><b id="end-score">0</b><span>PONTOS</span></div><div><b id="end-correct">0</b><span>ACERTOS</span></div></div>
+      <div id="cloud-save-message" class="cloud-save-message"></div>
+      <button id="end-restart" class="primary-button">JOGAR NOVAMENTE ➜</button>
+    </div>
+  </div>
+  <div id="pause-overlay" class="screen-overlay hidden">
+    <div class="pause-card panel"><div class="eyebrow">JOGO PAUSADO</div><h2>Seu caminho espera.</h2>
+      <p>Continue quando estiver preparado para explorar o Vale dos Conjuntos.</p>
+      <button id="resume-button" class="primary-button">CONTINUAR ➜</button>
+      <button id="restart-button" class="secondary-button">REINICIAR AVENTURA</button>
+    </div>
+  </div>
+  <div class="cloud-modal hidden" id="cloud-modal"><div class="cloud-modal-inner panel">
+    <button class="icon-button close-cloud" id="close-cloud">×</button>
+    <small class="eyebrow">CONEXÃO COM A NUVEM</small>
+    <h2>Conta e ranking</h2><p id="cloud-description">Conecte seu projeto Nhost para registrar o progresso.</p>
+    <form id="cloud-login-form"><input id="cloud-email" type="email" placeholder="Seu e-mail" autocomplete="email" required/><input id="cloud-password" type="password" placeholder="Sua senha" autocomplete="current-password" required minlength="6"/>
+      <div class="cloud-actions"><button class="primary-button" type="submit" data-action="login">ENTRAR</button><button type="button" class="secondary-button" id="cloud-register">CRIAR CONTA</button></div>
+    </form>
+    <div id="cloud-user" class="hidden"><p id="cloud-user-name"></p><button id="cloud-logout" class="secondary-button">SAIR DA CONTA</button></div>
+    <p class="cloud-message" id="cloud-message"></p>
+  </div></div>
+  <button id="cloud-open" class="cloud-open" aria-label="Abrir conexão Nhost" title="Nhost: conta e ranking">☁ Conta / Ranking</button>
+</div>
+<script type="module" src="/src/main.js"></script>
+</body>
+</html>
