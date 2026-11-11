@@ -33,9 +33,9 @@ O Editor pode solicitar reinicializacao.
 
 - Terreno 3D de 260 x 260 metros com montanhas perifericas e vila central plana.
 - 3 camadas de terreno (grama, terra/trilha e pedra) com texturas proceduralmente geradas.
-- 12 casas, fonte, portao/castelo, 125 distribuicoes tentadas de pinheiros,
+- 12 casas com texturas geradas (madeira, pedra, telhas e reboco), fonte, portao/castelo, 125 distribuicoes tentadas de pinheiros,
   rochas e arbustos; os meshes usam materiais PBR (URP/Lit).
-- Luz solar com sombras suaves, pontos de luz, fog, ACES, Bloom e Color Grading.
+- Luz solar com sombras suaves, ceu procedural, pontos de luz, fog, ACES, Bloom e Color Grading.
 - Personagem proxy C# em terceira pessoa com W/A/S/D, Shift, Space e animacao
   simples de membros; camera orbital com colisao, zoom, Q/R e botao direito do mouse.
 - 3 cristais colecionaveis com material emissivo e luz; HUD de objetivo e FPS.

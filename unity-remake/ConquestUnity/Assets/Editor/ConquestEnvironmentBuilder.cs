@@ -152,6 +152,81 @@ namespace Conquest.UnityRemake.Editor
             CreateMaterial("CrystalGold", new Color(.93f, .69f, .18f), .12f, .64f, new Color(1f, .6f, .08f) * 3f);
             CreateMaterial("Lantern", new Color(1f, .65f, .25f), .05f, .35f, new Color(1.0f, .45f, .09f) * 2.6f);
             CreateMaterial("Glass", new Color(.12f, .26f, .34f), .16f, .88f);
+            AddSurfaceDetailTextures();
+        }
+
+
+        /// <summary>
+        /// Texturas PBR-albedo originais em vez de superficies totalmente planas.
+        /// Tons/seams de madeira, pedra, telhas e reboco sao gerados deterministicamente
+        /// e salvos como Texture2D assets editaveis.
+        /// </summary>
+        private static void AddSurfaceDetailTextures()
+        {
+            AttachTexture("Stone", "StoneDetail", new Color(.55f, .57f, .56f),
+                new Color(.27f, .31f, .32f), 0, new Vector2(2.3f, 2.3f));
+            AttachTexture("StoneDark", "OldStoneDetail", new Color(.40f, .43f, .43f),
+                new Color(.22f, .24f, .25f), 0, new Vector2(2.1f, 2.1f));
+            AttachTexture("Timber", "WoodDetail", new Color(.37f, .23f, .14f),
+                new Color(.15f, .085f, .055f), 1, new Vector2(1.8f, 1.2f));
+            AttachTexture("Roof", "RoofTilesDetail", new Color(.59f, .25f, .17f),
+                new Color(.24f, .10f, .075f), 2, new Vector2(2.2f, 2.8f));
+            AttachTexture("Plaster", "PlasterDetail", new Color(.83f, .78f, .65f),
+                new Color(.52f, .47f, .38f), 3, new Vector2(2.0f, 2.0f));
+            AttachTexture("Leaf", "ForestDetail", new Color(.19f, .39f, .24f),
+                new Color(.07f, .17f, .11f), 3, new Vector2(1.0f, 1.0f));
+        }
+
+        private static void AttachTexture(string materialName, string textureName,
+            Color light, Color dark, int pattern, Vector2 tiling)
+        {
+            const int size = 128;
+            Texture2D texture = new Texture2D(size, size, TextureFormat.RGBA32, true);
+            texture.name = textureName;
+            texture.wrapMode = TextureWrapMode.Repeat;
+            texture.filterMode = FilterMode.Trilinear;
+
+            for (int y = 0; y < size; y++)
+            for (int x = 0; x < size; x++)
+            {
+                float broad = Mathf.PerlinNoise((x + 16f) * .056f, (y + 37f) * .056f);
+                float fine = Mathf.PerlinNoise((x + 7f) * .27f, (y + 17f) * .27f);
+                float t = .25f + broad * .52f + fine * .23f;
+                float seams = 1f;
+
+                if (pattern == 0) // blocos de pedra + junta irregular
+                {
+                    int row = y / 26;
+                    int shiftedX = (x + (row % 2) * 17) % 35;
+                    if (shiftedX <= 1 || y % 26 <= 1) seams = .36f;
+                }
+                else if (pattern == 1) // veios longos de madeira
+                {
+                    float wave = Mathf.Sin((x + broad * 11f) * .55f);
+                    t = Mathf.Clamp01(.25f + fine * .23f + .27f * (wave * .5f + .5f));
+                }
+                else if (pattern == 2) // telhas intercaladas
+                {
+                    int row = y / 17;
+                    int shiftedX = (x + (row % 2) * 12) % 25;
+                    if (shiftedX <= 1 || y % 17 <= 1) seams = .28f;
+                    t += Mathf.Sin(y * .23f) * .11f;
+                }
+                else // reboco com granulação pequena
+                {
+                    t = .55f + (broad - .5f) * .26f + (fine - .5f) * .13f;
+                }
+                Color pixel = Color.Lerp(dark, light, Mathf.Clamp01(t * seams));
+                texture.SetPixel(x, y, pixel);
+            }
+
+            texture.Apply(true, false);
+            AssetDatabase.CreateAsset(texture, Generated + "/" + textureName + ".asset");
+            Material material = Materials[materialName];
+            material.SetTexture("_BaseMap", texture);
+            material.SetTextureScale("_BaseMap", tiling);
+            material.SetColor("_BaseColor", Color.white);
+            EditorUtility.SetDirty(material);
         }
 
         private static void SetupMeshes()
@@ -649,6 +724,18 @@ namespace Conquest.UnityRemake.Editor
             sun.shadows = LightShadows.Soft;
             sun.shadowStrength = .79f;
             RenderSettings.sun = sun;
+            Shader skyShader = Shader.Find("Skybox/Procedural");
+            if (skyShader)
+            {
+                Material sky = new Material(skyShader);
+                sky.name = "Skybox_Daylight";
+                sky.SetColor("_SkyTint", new Color(.40f, .57f, .78f));
+                sky.SetColor("_GroundColor", new Color(.32f, .36f, .35f));
+                sky.SetFloat("_AtmosphereThickness", 1.05f);
+                sky.SetFloat("_Exposure", 1.15f);
+                AssetDatabase.CreateAsset(sky, Generated + "/Skybox_Daylight.mat");
+                RenderSettings.skybox = sky;
+            }
             QualitySettings.shadowDistance = 100f;
 
             RenderSettings.ambientMode = AmbientMode.Flat;
