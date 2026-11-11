@@ -446,7 +446,15 @@ namespace Conquest.UnityRemake.Editor
                 new Vector3(0, 1.65f, 0), new Vector3(.6f, 1.3f, .6f), "Stone");
             Part("Ponta metal", PrimitiveType.Sphere, fountain,
                 new Vector3(0, 3.05f, 0), new Vector3(.6f, .6f, .6f), "Metal", false);
+            Shader particleShader = Shader.Find("Universal Render Pipeline/Particles/Unlit");
+            if (!particleShader) throw new InvalidOperationException("Shader URP de particulas indisponivel.");
+            Material dropletMaterial = new Material(particleShader);
+            dropletMaterial.name = "Particles_Water";
+            dropletMaterial.SetColor("_BaseColor", new Color(.48f, .85f, 1f, .65f));
+            AssetDatabase.CreateAsset(dropletMaterial, Generated + "/Particles_Water.mat");
+
             var particles = new GameObject("Gotas de agua").AddComponent<ParticleSystem>();
+            particles.GetComponent<ParticleSystemRenderer>().sharedMaterial = dropletMaterial;
             particles.transform.SetParent(fountain, false);
             particles.transform.localPosition = new Vector3(0, 2.6f, 0);
             var main = particles.main;
@@ -641,6 +649,7 @@ namespace Conquest.UnityRemake.Editor
             sun.shadows = LightShadows.Soft;
             sun.shadowStrength = .79f;
             RenderSettings.sun = sun;
+            QualitySettings.shadowDistance = 100f;
 
             RenderSettings.ambientMode = AmbientMode.Flat;
             RenderSettings.ambientLight = new Color(.42f, .51f, .59f);
