@@ -1,0 +1,18 @@
+# Unity project local-only files; generated scene/assets and .meta must be committed.
+[Ll]ibrary/
+[Tt]emp/
+[Oo]bj/
+[Ll]ogs/
+[Uu]ser[Ss]ettings/
+[Bb]uilds/
+[Mm]emoryCaptures/
+[Rr]ecordings/
+.vs/
+.idea/
+*.csproj
+*.sln
+*.suo
+*.user
+*.tmp
+*.pdb
+# Do not ignore Assets/*.meta: GUIDs are necessary for Unity scenes.
