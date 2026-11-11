@@ -4,13 +4,13 @@
 
 Projeto web em **Vite + Babylon.js**, organizado para **Nhost, GitHub Pages, Docker, Portainer e Oracle Cloud**.
 
-> **Status real:** código de reconstrução publicado. Os testes de CI e compilação devem ser conferidos na aba Actions. GitHub Pages depende da ativação em Settings; Nhost e Oracle Cloud ainda precisam de contas/configuração. O modo multiplayer online não está implementado nesta versão.
+> **Status real:** código de reconstrução publicado. **10 testes Vitest, compilação Vite, build Docker e deploy personalizado do GitHub Pages passaram no GitHub Actions**. Por segurança, confira em Settings → Pages se a fonte é GitHub Actions (há também um fluxo Jekyll automático da branch); Nhost e Oracle Cloud ainda precisam de contas/configuração. O modo multiplayer online não está implementado nesta versão.
 
 ## 🎮 Acessar e executar
 
 - **Código-fonte:** https://github.com/Ruan-levi/Conquest-nuvem
 - **GitHub Actions:** https://github.com/Ruan-levi/Conquest-nuvem/actions
-- **Endereço previsto do Pages (somente após confirmação):** https://ruan-levi.github.io/Conquest-nuvem/
+- **Endereço do Pages informado pelo workflow de deploy bem-sucedido:** https://ruan-levi.github.io/Conquest-nuvem/
 
 Instale **Node.js 22.12+** e npm:
 
@@ -100,14 +100,20 @@ O frontend **não pode conter admin secret**. Valores VITE_* são públicos. A p
 |---|---|
 | Jogabilidade matemática e progressão | Código disponível |
 | WASD corrigido, corrida, animação e navegação | Código disponível |
-| Testes Vitest e workflow CI/CD | Arquivos no repositório; conferir execução |
-| GitHub Pages | Precisa habilitar em Settings |
+| Testes Vitest e workflow CI/CD | **10 testes e build aprovados no GitHub Actions** |
+| GitHub Pages | **Deploy Vite concluído no Actions; confirmar fonte GitHub Actions nas configurações** |
 | Nhost Auth/GraphQL | Cliente preparado; ainda sem projeto conectado |
 | Quatro recursos BaaS comprovados | Pendente |
 | Multiplayer real | Pendente |
 | Oracle/Portainer com HTTPS | Pendente |
 
 **Não confundir:** GitHub Pages permite demonstrar o jogo no navegador, mas a atividade também exige a publicação em **VPS Oracle com Docker e Portainer**.
+
+## ✅ Primeira execução automatizada verificada
+
+O workflow de **11/11/2026** executou o teste automatizado (**10 aprovados**), o build de produção Vite, a publicação da imagem Docker no GHCR e o deploy de Vite no GitHub Pages, todos com **conclusão de sucesso**. [Ver execução oficial](https://github.com/Ruan-levi/Conquest-nuvem/actions/runs/43043313992).
+
+**Limite da verificação:** essa evidência confirma build, testes unitários e deploy, mas não comprova que cada cena WebGL e cada controle foram testados visualmente em um navegador real. A validação de Nhost e OCI continua pendente.
 
 ## 🤝 Melhorias futuras
 

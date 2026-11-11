@@ -2,8 +2,8 @@
 
 ## A. GitHub Pages (versão de demonstração)
 
-1. Acesse https://github.com/Ruan-levi/Conquest-nuvem/settings/pages
-2. Em **Build and deployment → Source**, escolha **GitHub Actions**.
+1. Acesse https://github.com/Ruan-levi/Conquest-nuvem/settings/pages — o workflow Vite já concluiu um deploy com sucesso, mas existe também um workflow automático Jekyll de publicação da branch.
+2. Em **Build and deployment → Source**, escolha **GitHub Actions**. Isso evita que a publicação Jekyll da branch substitua o site Vite por arquivos-fonte.
 3. Acesse https://github.com/Ruan-levi/Conquest-nuvem/actions e confira o workflow **Conquest - build, testes e publicacao**.
 4. Se necessário, abra o workflow e clique em **Run workflow**.
 5. Confira a aprovação dos jobs **verify** e **pages**.
