@@ -44,8 +44,8 @@ jobs:
         run: npm run build
         env:
           GITHUB_PAGES: 'true'
-          VITE_NHOST_SUBDOMAIN: ${{ vars.NHOST_SUBDOMAIN }}
-          VITE_NHOST_REGION: ${{ vars.NHOST_REGION }}
+          VITE_NHOST_SUBDOMAIN: ${{ vars.NHOST_SUBDOMAIN || 'xbnokoslfakjqteiyvbu' }}
+          VITE_NHOST_REGION: ${{ vars.NHOST_REGION || 'sa-east-1' }}
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v4
         with:
@@ -76,8 +76,8 @@ jobs:
           push: true
           tags: ghcr.io/ruan-levi/conquest-nuvem:latest
           build-args: |
-            VITE_NHOST_SUBDOMAIN=${{ vars.NHOST_SUBDOMAIN }}
-            VITE_NHOST_REGION=${{ vars.NHOST_REGION }}
+            VITE_NHOST_SUBDOMAIN=${{ vars.NHOST_SUBDOMAIN || 'xbnokoslfakjqteiyvbu' }}
+            VITE_NHOST_REGION=${{ vars.NHOST_REGION || 'sa-east-1' }}
 
   deploy-oci:
     name: Implantar na Oracle com Portainer (opcional)

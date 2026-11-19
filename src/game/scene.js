@@ -1,6 +1,8 @@
 import * as B from "@babylonjs/core/Legacy/legacy";
 import { WORLD, WORLD_BOUNDS, currentTarget, distance2D } from "./world-map.js";
 import { movementVector, WALK_SPEED, RUN_SPEED } from "./logic.js";
+import { applyNaturalTextures } from "./environment/textures.js";
+import { buildAmbientScenery } from "./environment/scenery.js";
 
 // Os modelos são procedurais; nenhum arquivo proprietário do Unity é exigido.
 // Câmera inicial olha para +Z: W avança, S recua, Q/R giram a câmera.
@@ -14,10 +16,10 @@ export function createWorld(canvas, onInteractRequest) {
   const engine = new B.Engine(canvas, true, { preserveDrawingBuffer: false, stencil: false, antialias: true }, true);
   engine.setHardwareScalingLevel(isMobile ? 1.45 : Math.max(1, Math.min(devicePixelRatio || 1, 1.5)));
   const scene = new B.Scene(engine);
-  scene.clearColor = new B.Color4(0.055, 0.15, 0.18, 1);
+  scene.clearColor = new B.Color4(0.27, 0.43, 0.49, 1);
   scene.fogMode = B.Scene.FOGMODE_EXP2;
-  scene.fogColor = color("#183c42");
-  scene.fogDensity = 0.008;
+  scene.fogColor = color("#527d86");
+  scene.fogDensity = 0.006;
   const camera = new B.FreeCamera("Câmera de exploração", v(0, 9, -17), scene);
   camera.minZ = 0.1;
   camera.maxZ = 270;
@@ -26,12 +28,12 @@ export function createWorld(canvas, onInteractRequest) {
   scene.activeCamera = camera;
 
   const hemi = new B.HemisphericLight("Luz natural", v(-0.2, 1, 0.2), scene);
-  hemi.intensity = 0.9;
+  hemi.intensity = 1.08;
   hemi.diffuse = color("#d9f8e6");
   hemi.groundColor = color("#263f43");
   const sun = new B.DirectionalLight("Sol", v(-0.45, -1, 0.6), scene);
   sun.position = v(23, 40, -34);
-  sun.intensity = 1.45;
+  sun.intensity = 1.35;
   sun.diffuse = color("#ffe9c0");
 
   const shadow = !isMobile ? new B.ShadowGenerator(1024, sun) : null;
@@ -60,6 +62,11 @@ export function createWorld(canvas, onInteractRequest) {
     gold: material("ouro antigo", "#c9ad63", "#8d6c25"),
     white: material("off-white", "#e1e7d8")
   };
+  const surfaces = applyNaturalTextures(scene, mats, isMobile);
+  // Texturas em cores próprias: o tom do material não deve escurecê-las.
+  for (const key of ["grass", "path", "stone", "wood", "roof"]) {
+    mats[key].diffuseColor = B.Color3.White();
+  }
 
   const ground = B.MeshBuilder.CreateGround("Vale dos Conjuntos", { width: 95, height: 145, subdivisions: 1 }, scene);
   ground.position.z = 33;
@@ -92,7 +99,10 @@ export function createWorld(canvas, onInteractRequest) {
     tile.receiveShadows = true;
   }
   // Rio, pontes decorativas e pedras do vale.
-  box("Leito do rio", v(-31, 0.025, 32), [6, 0.06, 137], material("rio", "#236c82", "#0a3857"));
+  const riverMaterial = material("rio", "#ffffff", "#113e4a");
+  riverMaterial.diffuseTexture = surfaces.water;
+  riverMaterial.specularColor = color("#7facae");
+  box("Leito do rio", v(-31, 0.025, 32), [6, 0.06, 137], riverMaterial);
   for (let i = 0; i < 8; i++) {
     const z = -4 + i * 13;
     cylinder("Marco de pedra", v(-24, 0.54, z), 1, 1.2, 0.7, mats.stone, 6);
@@ -139,6 +149,7 @@ export function createWorld(canvas, onInteractRequest) {
   }
   box("Portão do castelo", v(0, 5.1, 82), [18, 10.2, 2], mats.darkStone);
   box("Portal luminoso", v(0, 3.3, 80.8), [5.4, 6.4, .15], material("portal", "#297b75", "#13534d"));
+  const ambient = buildAmbientScenery({ scene, box, cylinder, sphere, material, mats, isMobile, random });
 
   function createPerson(name, x, z, palette, size = 1) {
     const root = new B.TransformNode(name + " raiz", scene);
@@ -232,6 +243,8 @@ export function createWorld(canvas, onInteractRequest) {
   function update(state, dt, keys, active) {
     dt = clamp(dt, 0, .05);
     elapsed += dt;
+    surfaces.update(elapsed);
+    ambient.update(elapsed);
     if (active && !state.battle) {
       if (keys.q) cameraYaw -= dt * 1.7;
       if (keys.r) cameraYaw += dt * 1.7;
