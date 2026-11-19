@@ -1185,6 +1185,63 @@
       {
         "table": {
           "schema": "public",
+          "name": "conquest_duels"
+        },
+        "select_permissions": [
+          {
+            "role": "user",
+            "permission": {
+              "columns": [
+                "id",
+                "status",
+                "host_nickname",
+                "guest_nickname",
+                "host_round",
+                "guest_round",
+                "host_score",
+                "guest_score"
+              ],
+              "filter": {
+                "_or": [
+                  { "host_id": { "_eq": "X-Hasura-User-Id" } },
+                  { "guest_id": { "_eq": "X-Hasura-User-Id" } }
+                ]
+              },
+              "limit": 100,
+              "allow_aggregations": false
+            }
+          }
+        ]
+      },
+      {
+        "table": {
+          "schema": "public",
+          "name": "conquest_duel_leaderboard"
+        },
+        "select_permissions": [
+          {
+            "role": "user",
+            "permission": {
+              "columns": ["nickname", "best_score", "played", "wins"],
+              "filter": {},
+              "limit": 100,
+              "allow_aggregations": false
+            }
+          },
+          {
+            "role": "public",
+            "permission": {
+              "columns": ["nickname", "best_score", "played", "wins"],
+              "filter": {},
+              "limit": 100,
+              "allow_aggregations": false
+            }
+          }
+        ]
+      },
+      {
+        "table": {
+          "schema": "public",
           "name": "conquest_scores"
         },
         "select_permissions": [
