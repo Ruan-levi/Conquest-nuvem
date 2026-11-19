@@ -105,6 +105,7 @@ O frontend **não pode conter admin secret**. Valores VITE_* são públicos. A p
 - [Conectar o Nhost](docs/NHOST.md)
 - [Publicar Pages e Oracle/Portainer](docs/PUBLICACAO.md)
 - [Conferência do trabalho final](docs/TRABALHO_FINAL.md)
+- [Organização dos módulos, melhorias visuais e checklist de QA](docs/ORGANIZACAO_E_QA.md)
 
 ### Estado de implementação
 

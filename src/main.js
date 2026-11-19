@@ -2,6 +2,7 @@ import "./style.css";
 import { createWorld } from "./game/scene.js";
 import { createGameState, interact, acceptLioraQuest, getBattleQuestion, answerQuestion, canInteract, stageLabel, makeResult } from "./game/logic.js";
 import { currentTarget, distance2D } from "./game/world-map.js";
+import { nearbyScenicSpot, inspectScenicSpot } from "./game/interactions.js";
 import { cloudService } from "./services/nhost.js";
 
 const $ = (id) => document.getElementById(id);
@@ -79,10 +80,11 @@ function updateHud() {
     $("objective-stage").textContent = stageLabel(state);
     $("direction-arrow").style.transform = "rotate(" + world.directionAngle(state) + "rad)";
   }
-  const near = started && !paused && !state.battle && !isVisible(ui.dialogue) &&
-    !isVisible(ui.cloud) && !isVisible(ui.end) && canInteract(state);
+  const canAct = started && !paused && !state.battle && !isVisible(ui.dialogue) &&
+    !isVisible(ui.cloud) && !isVisible(ui.end);
+  const near = canAct && (canInteract(state) || nearbyScenicSpot(state.position));
   toggle($("interaction-prompt"), Boolean(near));
-  if (near) $("interaction-text").textContent = near.action + " · " + near.label;
+  if (near) $("interaction-text").textContent = (near.action || "Explorar") + " · " + near.label;
 }
 function presentBattle() {
   const battle = state.battle;
@@ -179,6 +181,14 @@ function interactNow() {
     notify("✦ " + action.label + " coletado! +35 pontos", 2700);
     if (state.phase === "guardians") notify("✦ Três cristais reunidos! Encontre o Guardião da União.", 4200);
   } else if (action.type === "battle") startBattle();
+  else if (action.type === "none") {
+    const spot = nearbyScenicSpot(state.position);
+    if (spot) {
+      const inspected = inspectScenicSpot(state, spot);
+      notify(inspected.message, 5800);
+      sound(inspected.type === "healed" ? 740 : 480, .18, "sine");
+    }
+  }
   updateHud();
 }
 
