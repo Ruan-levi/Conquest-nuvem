@@ -1,6 +1,6 @@
 # CONQUEST — roteiro de desenvolvimento GitHub-first
 
-> Data de revisao: 18/11/2026. A aplicacao **Vite + Babylon.js** e a entrega principal para a disciplina. O projeto Unity e uma trilha paralela e nao substitui Nhost/Oracle.
+> Data de revisao: 19/11/2026. A aplicacao **Vite + Babylon.js** e a entrega principal para a disciplina. O projeto Unity e uma trilha paralela e nao substitui Nhost/Oracle.
 
 ## Status por marco
 
@@ -14,6 +14,7 @@
 | 5. Competitivo 2 jogadores | Sala, sincronizacao, anti-replay, regras de vencedor e reconexao | Pendente | #17 |
 | 6. Deploy obrigatorio OCI | Docker, Portainer, HTTPS, CI/CD GitHub/Oracle | Pipeline preparado; VPS e deploy real pendentes | #4 |
 | 7. Aceite academico | RF01–RF07, RNF01–RNF06, evidencias e relatorio | Pendente | #5 |
+| 8. Portal de entrada e apresentacao | Landing page, acesso antecipado a Auth, ranking autenticado, retorno ao portal e roteiro de video | Codigo em branch de integracao; testes e publicacao a confirmar | PR de integracao |
 
 ## Metodo de trabalho
 
@@ -37,3 +38,4 @@
 - O **Desafio da Nuvem** valida 6 perguntas no servidor, mas so funcionara com projeto Nhost real, migracoes e metadata configuradas.
 - A consulta de ranking preparada nao substitui a subscription realtime exigida em RF06.
 - Nhost Functions e GitHub Actions exigem verificacoes de permissao, cota e disponibilidade em cada ambiente real.
+- A apresentacao final exige **um unico video gravado por equipe**, enviado junto aos arquivos no AVA. O roteiro esta em [ROTEIRO_VIDEO_FINAL.md](ROTEIRO_VIDEO_FINAL.md); conferir prazo na atividade.

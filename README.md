@@ -4,6 +4,8 @@
 
 Projeto web em **Vite + Babylon.js**, organizado para **Nhost, GitHub Pages, Docker, Portainer e Oracle Cloud**.
 
+**Versão em preparação para entrega:** portal inicial com acesso a cadastro/login antes da aventura, modos de jogo, ranking verificado quando o Nhost está configurado e retorno ao portal ao pausar/concluir. Essa versão está em branch de desenvolvimento e **não deve ser confundida com o código já publicado na `main`**. A publicação depende de revisão, merge e GitHub Actions.
+
 > **Status real:** código de reconstrução publicado. **10 testes Vitest, compilação Vite, build Docker e deploy personalizado do GitHub Pages passaram no GitHub Actions**. Por segurança, confira em Settings → Pages se a fonte é GitHub Actions (há também um fluxo Jekyll automático da branch); Nhost e Oracle Cloud ainda precisam de contas/configuração. O modo multiplayer online não está implementado nesta versão.
 
 ## 🏰 Projeto Unity 6.3 LTS (prototipo visual URP)
@@ -115,6 +117,8 @@ O frontend **não pode conter admin secret**. Valores VITE_* são públicos. A p
 - [Conectar o Nhost](docs/NHOST.md)
 - [Publicar Pages e Oracle/Portainer](docs/PUBLICACAO.md)
 - [Conferência do trabalho final](docs/TRABALHO_FINAL.md)
+- [Organização dos módulos, melhorias visuais e checklist de QA](docs/ORGANIZACAO_E_QA.md)
+- [Roteiro de gravação e entrega do vídeo obrigatório no AVA](docs/ROTEIRO_VIDEO_FINAL.md)
 
 ### Estado de implementação
 
