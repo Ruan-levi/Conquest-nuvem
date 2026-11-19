@@ -2,6 +2,8 @@
 
 **Estado:** SDK e interface integrados em codigo; falta configurar projeto Nhost, tabela, permissoes e Storage no painel. A execucao real nao foi comprovada.
 
+**Novo modo multiplayer e ranking global:** veja [NHOST_DUELOS.md](NHOST_DUELOS.md) para a migração `002_conquest_duels.sql`, as permissões específicas do Hasura, a Function, o convite de dois jogadores e o teste em tempo real.
+
 ## Passo 1 — Configurar o cliente
 
 Crie projeto em https://app.nhost.io. Copie APENAS subdomain e region publicos.

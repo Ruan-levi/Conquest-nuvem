@@ -4,6 +4,7 @@ import { createGameState, interact, acceptLioraQuest, getBattleQuestion, answerQ
 import { currentTarget, distance2D } from "./game/world-map.js";
 import { nearbyScenicSpot, inspectScenicSpot } from "./game/interactions.js";
 import { cloudService } from "./services/nhost.js";
+import { initDuelUI } from "./ui/duel.js";
 
 const $ = (id) => document.getElementById(id);
 const keys = Object.create(null);
@@ -344,7 +345,6 @@ async function refreshPortalRanking() {
   const request = ++portalRankingRequest;
   const list = $("portal-ranking-list");
   const status = $("portal-ranking-status");
-  const user = cloudService.getUser();
   list.replaceChildren();
   const addItem = (message) => {
     const item = document.createElement("li");
@@ -352,39 +352,43 @@ async function refreshPortalRanking() {
     list.append(item);
   };
   if (!cloudService.isConfigured()) {
-    addItem("Histórico disponível após configurar a conexão com o Nhost.");
-    status.textContent = "A jornada 3D funciona sem conexão com a nuvem.";
+    addItem("Ranking disponível após configurar o projeto Nhost.");
+    status.textContent = "A aventura 3D continua disponível sem conexão.";
     return;
   }
-  if (!user) {
-    addItem("Entre na sua conta para consultar suas melhores partidas.");
-    status.textContent = "O histórico exige autenticação no Nhost.";
-    return;
-  }
-  status.textContent = "Consultando suas partidas no Nhost…";
+  status.textContent = "Consultando o ranking global verificado no Nhost…";
   try {
-    const scores = await cloudService.getOwnScores();
+    const ranking = await cloudService.getGlobalLeaderboard();
     if (request !== portalRankingRequest) return;
-    if (!scores.length) addItem("Ainda não há partidas salvas nesta conta.");
-    scores.sort((a,b) => b.score - a.score).slice(0, 10).forEach((score, index) => {
+    if (!ranking.length) addItem("Ainda não há duelos concluídos pelos dois jogadores.");
+    ranking.forEach((player, index) => {
       const item = document.createElement("li");
       const position = document.createElement("span");
       position.className = "portal-rank-position";
       position.textContent = String(index + 1).padStart(2, "0");
-      const player = document.createElement("span");
-      player.className = "portal-rank-player";
-      player.textContent = new Date(score.created_at).toLocaleDateString("pt-BR") + (score.completed ? " · Vitória" : " · Jornada");
+      const username = document.createElement("span");
+      username.className = "portal-rank-player";
+      username.textContent = player.nickname + " · " + player.wins + " vitórias";
       const points = document.createElement("strong");
-      points.textContent = Number(score.score).toLocaleString("pt-BR") + " pts";
-      item.append(position, player, points);
+      points.textContent = Number(player.bestScore).toLocaleString("pt-BR") + " pts";
+      item.append(position, username, points);
       list.append(item);
     });
-    status.textContent = "Histórico privado da sua conta. Pontuações calculadas no navegador.";
+    status.textContent = "Ranking dos duelos corrigidos no servidor. Atualização em tempo real e consulta automática.";
   } catch (error) {
     if (request !== portalRankingRequest) return;
-    addItem("Não foi possível carregar o ranking agora.");
-    status.textContent = "Verifique a tabela conquest_scores e suas permissões Hasura.";
+    addItem("Ranking ainda indisponível neste projeto Nhost.");
+    status.textContent = "Publique a Function duel e aplique a migração 002; detalhes em docs/NHOST.md.";
   }
+}
+initDuelUI(cloudService);
+if (cloudService.isConfigured()) {
+  window.setInterval(() => {
+    if (isVisible(ui.intro) && !document.hidden) refreshPortalRanking();
+  }, 10000);
+  cloudService.subscribeGlobalLeaderboard(refreshPortalRanking).catch(() => {
+    /* Consulta automática a cada dez segundos mantém o ranking disponível. */
+  });
 }
 for (const id of ["portal-account-open", "portal-cloud-open"]) {
   $(id).addEventListener("click", () => $("cloud-open").click());

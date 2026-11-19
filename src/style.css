@@ -63,3 +63,28 @@
 @media(max-width:1080px){.portal-grid{grid-template-columns:minmax(0,1fr);padding-top:40px}.portal-sidebar{grid-template-columns:repeat(2,minmax(0,1fr));align-self:stretch}.portal-grid .intro-content h1{font-size:clamp(65px,12vw,118px)}.portal-card{padding:21px}}
 @media(max-width:700px){.portal-shell{padding:18px 17px 24px}.portal-navigation{align-items:flex-start}.portal-logo strong{font-size:19px}.portal-logo small{font-size:7px;letter-spacing:.9px}.portal-account-status{display:none}.portal-nav-actions .portal-ghost-button{padding:11px 10px;font-size:10px}.portal-grid{padding:30px 0 27px;gap:26px}.portal-grid .intro-content h1{font-size:clamp(53px,13vw,82px);letter-spacing:-2px}.portal-grid .intro-content p{font-size:14px}.portal-cta-row .primary-button,.portal-cta-row .portal-ghost-button{width:100%}.portal-journey{grid-template-columns:1fr 1fr}.portal-sidebar{grid-template-columns:1fr}.portal-footer{flex-direction:column;gap:9px;line-height:1.5}.portal-grid .intro-features{margin:19px 0}}
 @media(max-width:380px){.portal-logo>span{display:none}.portal-journey{grid-template-columns:1fr}.portal-grid .intro-content h1{font-size:49px}}
+
+/* Arena online: preserva a linguagem visual do portal e das batalhas 3D. */
+.duel-modal{position:absolute;inset:0;z-index:30;display:flex;justify-content:center;align-items:center;padding:20px;background:#03151de8;backdrop-filter:blur(12px)}
+.duel-card{position:relative;width:min(98vw,720px);max-height:96vh;overflow-y:auto;padding:clamp(24px,4vw,42px)}
+.duel-card h2{font:700 clamp(24px,3vw,34px) Cinzel,Georgia,serif;color:#f5fffa;margin:13px 0 16px}
+.duel-card h3{font-size:clamp(17px,2.5vw,22px);line-height:1.45;color:#f7fff8;margin:12px 0 20px}
+.duel-card label{display:block;color:#b7ddcf;font-size:12px;font-weight:800;margin:18px 0 8px}
+.duel-card input{width:100%;padding:13px 15px;border:1px solid #48827e;border-radius:10px;background:#0a2b33;color:#f5fffa;letter-spacing:.4px}
+.duel-card input:focus-visible{outline:2px solid #8cf0ca;outline-offset:2px}
+.duel-card .duel-close{position:absolute;top:17px;right:17px}
+.duel-message{min-height:20px;color:#a9ebd2;font-size:12px;line-height:1.6;padding-right:25px}
+.duel-divider{text-align:center;color:#91b6b1;font-size:10px;letter-spacing:2px;font-weight:800;margin:24px 0 15px}
+.duel-wide{width:100%;margin-top:16px;min-height:48px}
+.duel-invite{border:1px dashed #6ddbb4;border-radius:12px;padding:13px;text-align:center;font-size:11px;letter-spacing:1px;color:#bce8d9}
+.duel-invite b{display:block;letter-spacing:5px;font-size:28px;color:#effff5;margin-top:8px;user-select:all}
+.duel-scoreboard{display:grid;grid-template-columns:1fr 40px 1fr;gap:12px;align-items:center;margin:18px 0 28px}
+.duel-scoreboard>div:not(.duel-versus){display:flex;flex-direction:column;min-width:0;gap:5px;align-items:center;padding:14px;border:1px solid #7dbea447;border-radius:13px;background:#0b343bcc}
+.duel-scoreboard small{font-size:9px;color:#84cdb0;letter-spacing:1.2px}
+.duel-scoreboard strong{max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:13px}
+.duel-scoreboard b{font:800 28px Cinzel,Georgia,serif;color:#c9ffe0}
+.duel-scoreboard span{font-size:10px;color:#adc9c3}
+.duel-versus{color:#95e5c5;font:800 15px Cinzel,Georgia,serif;text-align:center}
+.duel-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:20px}.duel-actions button{flex:1;min-width:120px;margin:0;font-size:10px;padding:12px}
+.duel-card .answer-grid{margin:6px 0 14px}
+@media(max-width:550px){.duel-modal{padding:6px}.duel-card{max-height:100vh;border-radius:12px;padding:23px 16px}.duel-invite b{font-size:24px}.duel-scoreboard{grid-template-columns:1fr 26px 1fr;gap:5px}.duel-scoreboard>div:not(.duel-versus){padding:10px 5px}.duel-scoreboard strong{font-size:11px}.duel-scoreboard b{font-size:23px}.duel-actions button{min-width:90px}}

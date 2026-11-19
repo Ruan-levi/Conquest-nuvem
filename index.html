@@ -66,7 +66,7 @@
           <div class="intro-features"><span>⚔ Batalhas matemáticas</span><span>◇ Mundo 3D explorável</span><span>✦ Missões e cristais</span></div>
           <div class="portal-cta-row">
             <button id="start-button" class="primary-button">INICIAR AVENTURA <span>➜</span></button>
-            <button id="portal-cloud-open" type="button" class="portal-ghost-button">☁ Minha conta e ranking</button>
+            <button id="portal-cloud-open" type="button" class="portal-ghost-button">☁ Minha conta</button>
           </div>
           <p class="portal-guest-note">Você pode jogar sem conta. Se o Nhost estiver configurado, entre para salvar e consultar seu histórico de partidas.</p>
           <div class="portal-journey"><span><b>01</b> Conheça Liora</span><span><b>02</b> Reúna 3 cristais</span><span><b>03</b> Enfrente os guardiões</span><span><b>04</b> Desafie Cael</span></div>
@@ -75,18 +75,18 @@
         <aside class="portal-sidebar" aria-label="Ranking e modos de jogo">
           <section class="portal-card" aria-labelledby="portal-ranking-title">
             <div class="portal-card-heading">
-              <div><small class="eyebrow">SEU PROGRESSO NA NUVEM</small><h2 id="portal-ranking-title">🏆 Suas melhores partidas</h2></div>
+              <div><small class="eyebrow">COMPETIÇÃO ONLINE</small><h2 id="portal-ranking-title">🏆 Ranking global</h2></div>
               <button id="portal-ranking-refresh" class="portal-small-button" type="button" aria-label="Atualizar ranking">↻</button>
             </div>
-            <ol id="portal-ranking-list" class="portal-ranking-list" aria-live="polite"><li>Entre na sua conta para consultar seu histórico.</li></ol>
-            <p id="portal-ranking-status" class="portal-status">Pontuações da jornada 3D são demonstrativas; ranking global verificado está em desenvolvimento.</p>
+            <ol id="portal-ranking-list" class="portal-ranking-list" aria-live="polite"><li>Carregando ranking global verificado…</li></ol>
+            <p id="portal-ranking-status" class="portal-status">Apenas partidas online concluídas pelos dois participantes entram na classificação.</p>
           </section>
           <section class="portal-card portal-modes" aria-labelledby="portal-modes-title">
             <small class="eyebrow">ESCOLHA COMO JOGAR</small>
             <h2 id="portal-modes-title">Modos de aventura</h2>
             <div class="portal-mode"><span class="portal-mode-symbol">⚔</span><div><strong>Jornada 3D</strong><small>Explore o Vale, resolva desafios e enfrente Cael.</small></div><span class="portal-mode-tag">Disponível</span></div>
-            <div class="portal-mode"><span class="portal-mode-symbol">✦</span><div><strong>Desafio da Nuvem</strong><small>Questões validadas no servidor: em preparação.</small></div><span class="portal-mode-tag">Em breve</span></div>
-            <p class="portal-status">Duelo online de dois jogadores: em desenvolvimento.</p>
+            <div class="portal-mode"><span class="portal-mode-symbol">✦</span><div><strong>Duelo online</strong><small>Convide um amigo por código e disputem seis perguntas corrigidas no Nhost.</small></div><button id="portal-duel-open" type="button" class="portal-mode-link">JOGAR</button></div>
+            <p class="portal-status">É necessário entrar em uma conta Nhost para participar. A jornada 3D continua disponível sem login.</p>
           </section>
         </aside>
       </main>
@@ -151,6 +151,36 @@
     </section>
     <p class="cloud-message" id="cloud-message" role="status" aria-live="polite"></p>
   </div></div>
+  <div class="duel-modal hidden" id="duel-modal" role="dialog" aria-modal="true" aria-labelledby="duel-title">
+    <div class="duel-card panel">
+      <button id="duel-close" type="button" class="icon-button duel-close" aria-label="Fechar duelo">×</button>
+      <small class="eyebrow">ARENA DOS CONJUNTOS · NHOST</small>
+      <h2 id="duel-title">Competição online</h2>
+      <p id="duel-message" class="duel-message" role="status">Crie uma sala ou entre com um código de convite.</p>
+      <div id="duel-setup">
+        <label for="duel-nickname">Apelido público no ranking</label>
+        <input id="duel-nickname" maxlength="24" minlength="3" value="Aventureiro" autocomplete="nickname"/>
+        <button id="duel-create" type="button" class="primary-button duel-wide">CRIAR SALA E CONVIDAR</button>
+        <div class="duel-divider">OU ENTRE NA SALA DE UM AMIGO</div>
+        <label for="duel-code-input">Código de convite (8 caracteres)</label>
+        <input id="duel-code-input" maxlength="8" placeholder="EX: A7BK42DC" autocapitalize="characters"/>
+        <button id="duel-join" type="button" class="secondary-button duel-wide">ENTRAR NO DUELO</button>
+      </div>
+      <div id="duel-play" class="hidden">
+        <p class="duel-invite">CÓDIGO PARA CONVIDAR: <b id="duel-room-code">--------</b></p>
+        <div class="duel-scoreboard">
+          <div><small>JOGADOR 1</small><strong id="duel-host-name">Aventureiro</strong><b id="duel-host-score">0</b><span id="duel-host-round">0/6</span></div>
+          <div class="duel-versus">VS</div>
+          <div><small>JOGADOR 2</small><strong id="duel-guest-name">Aguardando</strong><b id="duel-guest-score">0</b><span id="duel-guest-round">0/6</span></div>
+        </div>
+        <small id="duel-round-label" class="eyebrow">AGUARDANDO O SEGUNDO JOGADOR</small>
+        <h3 id="duel-question">Aguardando…</h3>
+        <div id="duel-answers" class="answer-grid"></div>
+        <p id="duel-connection" class="portal-status">Conectando ao tempo real…</p>
+        <div class="duel-actions"><button id="duel-refresh" type="button" class="secondary-button">ATUALIZAR</button><button id="duel-cancel" type="button" class="secondary-button">ENCERRAR PARTIDA</button><button id="duel-back" type="button" class="secondary-button">OUTRA SALA</button></div>
+      </div>
+    </div>
+  </div>
   <button id="cloud-open" class="cloud-open" aria-label="Abrir conexão Nhost" title="Nhost: conta e ranking">☁ Conta / Ranking</button>
 </div>
 <script type="module" src="/src/main.js"></script>
