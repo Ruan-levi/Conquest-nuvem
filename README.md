@@ -88,6 +88,16 @@ Dockerfile
 docker-compose.yml
 ~~~
 
+## ⚔️ Desafio da Nuvem (nova funcionalidade em revisão)
+
+Uma **partida de seis questões validadas no Nhost Functions** foi preparada na [PR #15](https://github.com/Ruan-levi/Conquest-nuvem/pull/15). No painel **Conta / Ranking**, jogadores autenticados podem iniciar o desafio, responder alternativas verificadas pelo servidor e consultar a classificação pseudonimizada de partidas concluídas. O gabarito não é enviado com a pergunta e cada rodada tem avanço condicional no banco.
+
+- Código: `functions/challenge.js`, `functions/_shared/quiz.js` e interface `src/main.js`.
+- Banco versionado: `nhost/migrations/default/`. Track/ACL da view e das tabelas ainda dependem da ligação ao projeto real Nhost.
+- Guia de configuração por GitHub: [docs/QUIZ_VALIDADO.md](docs/QUIZ_VALIDADO.md).
+- **Testes:** PR #15 possui 7 novos testes Node de backend além dos 10 de jogabilidade Vitest. A última execução do Actions na PR foi aprovada.
+- A campanha 3D original permanece com pontuação demonstrativa e independente. **Multiplayer e ranking em tempo real ainda não estão prontos.** Ainda não há comprovação de deployment no Nhost ou Oracle Cloud.
+
 ## ☁️ Integrações em nuvem
 
 **Atualização 11/11/2026 (branch de integração):** UI Conta/Ranking inclui histórico individual de pontuações via GraphQL, upload privado no Nhost Storage e subscription GraphQL Realtime; a migração SQL e permissões ainda precisam ser aplicadas num projeto real. Para Oracle/Portainer, consulte infra/oci/README.md. Sem credenciais/instância, não há deploy real na VPS.
