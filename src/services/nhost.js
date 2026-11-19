@@ -28,6 +28,7 @@ const SCORES_SUBSCRIPTION = "subscription LiveConquestScores { conquest_scores(o
 
 export const cloudService = {
   isConfigured() { return Boolean(subdomain && region); },
+  projectLabel() { return this.isConfigured() ? subdomain + " · " + region : "Não configurado"; },
   getUser() { return client?.sessionStorage.get()?.user || null; },
   async initialize() {
     if (this.isConfigured()) await getClient();
@@ -42,14 +43,14 @@ export const cloudService = {
     return "Login realizado com sucesso.";
   },
   async register(email, password) {
-    if (!email || !password || password.length < 8) {
-      throw new Error("Informe e-mail e senha com no minimo 8 caracteres.");
+    if (!email?.trim() || !password || password.length < 8) {
+      throw new Error("Informe e-mail válido e senha com no mínimo 8 caracteres.");
     }
     const nhost = await getClient();
     const response = await nhost.auth.signUpEmailPassword({ email: email.trim(), password });
     return response.body?.session?.user
       ? "Conta criada e conectada."
-      : "Cadastro recebido. Confirme o e-mail e depois faca login.";
+      : "Solicitação de cadastro enviada ao Nhost. Confira seu e-mail (inclusive Spam), confirme a conta e depois faça login. Veja a conta em Auth → Users no projeto indicado acima.";
   },
   async logout() {
     const nhost = await getClient();
