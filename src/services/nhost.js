@@ -84,8 +84,36 @@ export const cloudService = {
     const response = await nhost.graphql.request({ query: SCORES_QUERY });
     return response.body?.data?.conquest_scores || [];
   },
-  // Ranking global so devera ser liberado com view publica segura e validacao da pontuacao.
-  async getLeaderboard() { return this.getOwnScores(); },
+  // Apenas desafios validados pelo servidor entram neste ranking.
+  async getVerifiedLeaderboard() {
+    const { nhost } = await requireSession();
+    const response = await nhost.graphql.request({
+      query: "query ConquestVerifiedLeaderboard { conquest_leaderboard(order_by: {best_score: desc}, limit: 10) { nickname best_score completed_runs } }"
+    });
+    return response.body?.data?.conquest_leaderboard || [];
+  },
+  async getLeaderboard() { return this.getVerifiedLeaderboard(); },
+  async startVerifiedChallenge() {
+    const { nhost } = await requireSession();
+    const response = await nhost.functions.post("/challenge", { action: "start" });
+    if (!response.body?.runId || !response.body?.question) {
+      throw new Error(response.body?.error || "A funcao de desafio nao esta disponivel no Nhost.");
+    }
+    return response.body;
+  },
+  async answerVerifiedChallenge(run, choice) {
+    const { nhost } = await requireSession();
+    if (!run?.runId || !Number.isInteger(run.round) || !Number.isInteger(choice)) {
+      throw new Error("Partida ou alternativa invalida.");
+    }
+    const response = await nhost.functions.post("/challenge", {
+      action: "answer", runId: run.runId, round: run.round, choice
+    });
+    if (typeof response.body?.correct !== "boolean") {
+      throw new Error(response.body?.error || "A resposta nao foi confirmada pelo servidor.");
+    }
+    return response.body;
+  },
   async uploadProof(file) {
     if (!(file instanceof File)) throw new Error("Selecione uma imagem.");
     if (!["image/png", "image/jpeg", "image/webp"].includes(file.type)) {

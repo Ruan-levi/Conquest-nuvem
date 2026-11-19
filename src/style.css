@@ -40,3 +40,13 @@
 .cloud-dashboard .secondary-button{margin:10px 0 15px;padding:10px 13px;font-size:12px}
 .cloud-dashboard input[type="file"]{padding:10px;font-size:12px}
 .cloud-dashboard #cloud-realtime-status,.cloud-dashboard #cloud-storage-status{font-size:12px;overflow-wrap:anywhere}
+
+/* Desafio matematico verificado pela Nhost Function, separado da aventura local. */
+.verified-section{margin:19px 0;padding:14px 0;border-top:1px solid #356d71;border-bottom:1px solid #356d71}
+.verified-section p{font-size:12px;line-height:1.55}
+.verified-section h4{font-size:15px;color:#ebfff4;line-height:1.5;margin:10px 0 15px}
+.verified-answer-grid{gap:8px;margin:12px 0}
+.verified-answer-grid .answer-button{min-height:48px;padding:10px;font-size:12px}
+.verified-progress{font-weight:700;color:#bafcdb!important}
+#verified-status{font-size:12px;overflow-wrap:anywhere;min-height:23px}
+#verified-leaderboard-list{max-height:180px}

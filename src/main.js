@@ -19,6 +19,8 @@ let hudTime = 0;
 let toastTimeout = 0;
 let stopCloudRealtime = null;
 let cloudConnectionVersion = 0;
+let activeVerifiedRun = null;
+let verifiedBusy = false;
 const ui = {
   intro: $("intro-overlay"), hud: $("hud-left"), objective: $("objective-panel"),
   dialogue: $("dialogue-overlay"), battle: $("battle-overlay"), end: $("end-overlay"),
@@ -325,7 +327,10 @@ $("cloud-open").addEventListener("click", async () => {
   }
   if (!isVisible(ui.cloud)) return;
   updateCloudUser();
-  if (cloudService.getUser()) startLiveScores();
+  if (cloudService.getUser()) {
+    startLiveScores();
+    refreshVerifiedLeaderboard();
+  }
 });
 $("close-cloud").addEventListener("click", closeCloudModal);
 $("cloud-login-form").addEventListener("submit", async (event) => {
@@ -337,6 +342,7 @@ $("cloud-login-form").addEventListener("submit", async (event) => {
     $("cloud-message").textContent = result;
     updateCloudUser();
     startLiveScores();
+    refreshVerifiedLeaderboard();
   } catch (error) { $("cloud-message").textContent = error.message || "Falha no login."; }
 });
 $("cloud-register").addEventListener("click", async () => {
@@ -345,11 +351,17 @@ $("cloud-register").addEventListener("click", async () => {
     const result = await cloudService.register($("cloud-email").value, $("cloud-password").value);
     $("cloud-message").textContent = result;
     updateCloudUser();
-    if (cloudService.getUser()) startLiveScores();
+    if (cloudService.getUser()) {
+      startLiveScores();
+      refreshVerifiedLeaderboard();
+    }
   } catch (error) { $("cloud-message").textContent = error.message || "Nao foi possivel criar a conta."; }
 });
 $("cloud-logout").addEventListener("click", async () => {
   stopLiveScores();
+  activeVerifiedRun = null;
+  toggle($("verified-question-panel"), false);
+  $("verified-leaderboard-list").replaceChildren();
   try {
     await cloudService.logout();
     $("cloud-message").textContent = "Sessao encerrada.";
@@ -373,6 +385,90 @@ $("cloud-upload-proof").addEventListener("click", async () => {
     $("cloud-storage-status").textContent = "Falha no upload: " + (error.message || "erro");
   } finally { button.disabled = false; }
 });
+
+function renderVerifiedChallenge(run) {
+  const panel = $("verified-question-panel");
+  toggle(panel, Boolean(run));
+  if (!run) return;
+  $("verified-progress").textContent =
+    "Rodada " + run.round + "/" + run.totalRounds + " · " + run.score + " pontos";
+  const grid = $("verified-answer-grid");
+  grid.replaceChildren();
+  if (!run.question) {
+    $("verified-question").textContent = "Desafio concluido!";
+    $("verified-status").textContent = "Sua pontuacao verificada: " + run.score +
+      " pontos, com " + run.correctAnswers + " acertos.";
+    return;
+  }
+  $("verified-question").textContent = run.question.text;
+  run.question.options.forEach((option, choice) => {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "answer-button";
+    button.textContent = (choice + 1) + ". " + option;
+    button.addEventListener("click", () => submitVerifiedAnswer(choice));
+    grid.append(button);
+  });
+}
+async function refreshVerifiedLeaderboard() {
+  const list = $("verified-leaderboard-list");
+  list.replaceChildren();
+  try {
+    const scores = await cloudService.getVerifiedLeaderboard();
+    if (!scores.length) {
+      const item = document.createElement("li");
+      item.textContent = "Nenhuma partida verificada foi concluida.";
+      list.append(item);
+      return;
+    }
+    scores.forEach(row => {
+      const item = document.createElement("li");
+      item.textContent = row.nickname + " · " + row.best_score + " pts · " +
+        row.completed_runs + " partida(s)";
+      list.append(item);
+    });
+  } catch (error) {
+    const item = document.createElement("li");
+    item.textContent = "Ranking indisponivel: revise a view e as permissoes no Hasura.";
+    list.append(item);
+  }
+}
+async function submitVerifiedAnswer(choice) {
+  if (verifiedBusy || !activeVerifiedRun?.question) return;
+  verifiedBusy = true;
+  for (const button of $("verified-answer-grid").children) button.disabled = true;
+  $("verified-status").textContent = "Validando resposta no Nhost...";
+  try {
+    const answer = await cloudService.answerVerifiedChallenge(activeVerifiedRun, choice);
+    activeVerifiedRun = { ...activeVerifiedRun, ...answer };
+    renderVerifiedChallenge(activeVerifiedRun);
+    if (!answer.finished) {
+      $("verified-status").textContent = answer.correct ?
+        "Resposta correta! +100 pontos confirmados pelo servidor." :
+        "Resposta incorreta. A resposta certa era a alternativa " + (answer.correctOption + 1) + ".";
+    } else await refreshVerifiedLeaderboard();
+  } catch (error) {
+    $("verified-status").textContent = "Nao foi possivel validar a rodada: " + (error.message || "erro");
+    renderVerifiedChallenge(activeVerifiedRun);
+  } finally { verifiedBusy = false; }
+}
+$("verified-start").addEventListener("click", async () => {
+  if (verifiedBusy) return;
+  verifiedBusy = true;
+  const button = $("verified-start");
+  button.disabled = true;
+  $("verified-status").textContent = "Criando rodada no Nhost...";
+  try {
+    activeVerifiedRun = await cloudService.startVerifiedChallenge();
+    renderVerifiedChallenge(activeVerifiedRun);
+    $("verified-status").textContent = "Responda as seis perguntas para registrar sua classificacao.";
+    button.textContent = "INICIAR NOVA PARTIDA";
+  } catch (error) {
+    $("verified-status").textContent = "Desafio indisponivel: " + (error.message || "configure o Nhost");
+  } finally { verifiedBusy = false; button.disabled = false; }
+});
+$("verified-refresh").addEventListener("click", refreshVerifiedLeaderboard);
+
 cloudService.initialize().then(updateCloudUser).catch(() => { /* Modo local permanece acessivel. */ });
 
 try {

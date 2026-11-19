@@ -51,12 +51,20 @@ Teste com duas abas na mesma conta: uma nova partida salva em uma aba deve
 aparecer na outra sem recarregar. O botao Atualizar Dados usa GraphQL query
 como fallback, sem comprovar realtime.
 
+## Desafio verificado com Nhost Functions (nova trilha de desenvolvimento)
+
+A PR #15 acrescenta `functions/challenge.js`, migrations padrão do Nhost CLI e interface de um desafio de seis perguntas cuja pontuacao e atribuida somente no servidor. Esse backend exige criar um **projeto Nhost especifico do CONQUEST**, vincular o repositorio GitHub, aplicar migracoes e fazer Track de tabelas/view e permissoes. Ver [QUIZ_VALIDADO.md](QUIZ_VALIDADO.md) antes de publicar.
+
+O ranking coletivo da nova view usa somente partidas verificadas pelo backend. O historico `conquest_scores` antigo ainda recebe pontos calculados no navegador e e **experimental**, nunca usar como placar competitivo. O ranking da view ainda nao tem subscription realtime nem o modo 2 jogadores; nao confundir implementacao de codigo com a integracao funcionando em nuvem.
+
 ## Prova dos quatro recursos BaaS
 
 1. Auth: conta, verificacao, login e logout.
 2. Banco + GraphQL: grava e consulta de partida, visivel no Postgres/Hasura.
-3. Storage: arquivo privado aparece no bucket personal.
-4. Realtime: duas abas recebem atualizacoes sem refresh.
+3. Realtime: duas abas recebem atualizacoes sem refresh.
+4. **Functions**: API `/challenge` verifica token, avalia respostas e incrementa resultado no servidor.
+
+**Storage** continua como um quinto recurso complementar (upload privado, bucket `personal`). Nenhuma integracao pode ser declarada concluida antes da demonstracao real.
 
 Teste duas contas diferentes para demonstrar isolamento de registros e arquivos.
 Nao anuncie os quatro recursos como comprovados ate a demo funcionar de fato.
