@@ -2,11 +2,18 @@
 
 **Jogo 3D educacional de batalhas matemáticas | Desenvolvimento de Software em Nuvem — UNIFOR**
 
+## 🎮 [CLIQUE AQUI PARA JOGAR CONQUEST](https://ruan-levi.github.io/Conquest-nuvem/)
+
+**Acesse gratuitamente pelo navegador:** https://ruan-levi.github.io/Conquest-nuvem/
+
+No portal, você pode iniciar a aventura 3D sem cadastro. O duelo online e o ranking global
+exigem que a integração do Nhost esteja configurada e publicada conforme [as instruções](docs/NHOST.md).
+
 Projeto web em **Vite + Babylon.js**, organizado para **Nhost, GitHub Pages, Docker, Portainer e Oracle Cloud**.
 
-**Atualização para GitHub Pages:** portal inicial com cadastro/login antes da aventura, modos de jogo, histórico individual de pontuação no Nhost (somente com tabelas/permissões configuradas) e retorno ao portal ao pausar/concluir. O desafio verificado global continua na PR #15 e **ainda não foi publicado na `main`**.
+**Atualização para GitHub Pages:** portal inicial com cadastro/login antes da aventura, modos de jogo, histórico individual de pontuação no Nhost (somente com tabelas/permissões configuradas) e retorno ao portal ao pausar/concluir. O ranking de duelos verificados e a competição de dois jogadores estão implementados neste código; só estarão ativos no jogo público após configurar e publicar o backend Nhost.
 
-> **Status real (19/11/2026):** portal e melhorias 3D publicados, **16 testes Vitest, build Vite, imagem Docker GHCR e deploy personalizado do GitHub Pages aprovados no workflow #30**. Confira em Settings → Pages se a fonte é GitHub Actions (há também um fluxo Jekyll automático da branch). O cliente Nhost está configurado no build, mas o cadastro e as políticas ainda carecem de comprovação; Oracle Cloud e multiplayer online seguem pendentes.
+> **Status real (19/11/2026):** portal e melhorias 3D publicados, **16 testes Vitest, build Vite, imagem Docker GHCR e deploy personalizado do GitHub Pages aprovados no workflow #30**. Confira em Settings → Pages se a fonte é GitHub Actions. O novo modo de competição e o ranking global estão implementados no código, com testes de backend; **não há comprovação de funcionamento remoto até aplicar a migração, as permissões e publicar a Function no Nhost**. Oracle Cloud permanece pendente.
 
 ## 🏰 Projeto Unity 6.3 LTS (prototipo visual URP)
 
@@ -78,8 +85,16 @@ src/
     questions.js          Perguntas de conjuntos
   services/
     nhost.js              Auth e GraphQL opcionais
+  ui/
+    duel.js               Sala online, perguntas e placar
+functions/
+  duel.js                 Validacao de duelos no servidor Nhost
+  _shared/duel-questions.js  Gabarito privado dos duelos
+nhost/migrations/
+  002_conquest_duels.sql  Estrutura de duelos e ranking verificado
 tests/
   logic.test.js           Testes da movimentação e progressão
+  server/duel.node.mjs    Fluxo simulado de duas contas e anti-replay
 docs/
   NHOST.md                Configuração do BaaS e permissões
   PUBLICACAO.md           Passos para Pages e Oracle Cloud
@@ -105,6 +120,7 @@ O frontend **não pode conter admin secret**. Valores VITE_* são públicos. A p
 ## 📚 Documentação
 
 - [Conectar o Nhost](docs/NHOST.md)
+- [Ativar ranking global e duelos de dois jogadores no Nhost](docs/NHOST_DUELOS.md)
 - [Publicar Pages e Oracle/Portainer](docs/PUBLICACAO.md)
 - [Conferência do trabalho final](docs/TRABALHO_FINAL.md)
 - [Organização dos módulos, melhorias visuais e checklist de QA](docs/ORGANIZACAO_E_QA.md)
@@ -121,7 +137,7 @@ O frontend **não pode conter admin secret**. Valores VITE_* são públicos. A p
 | GitHub Pages | **Novo portal e melhorias 3D publicados pela PR #22; confirmar fonte GitHub Actions nas configurações** |
 | Nhost Auth/GraphQL | Cliente configurado no build; cadastro, tabelas e permissões reais pendentes de validação |
 | Quatro recursos BaaS comprovados | Pendente |
-| Multiplayer real | Pendente |
+| Multiplayer real e ranking global | Código frontend/backend e testes disponíveis; deploy Nhost e teste remoto pendentes |
 | Oracle/Portainer com HTTPS | Pendente |
 
 **Não confundir:** GitHub Pages permite demonstrar o jogo no navegador, mas a atividade também exige a publicação em **VPS Oracle com Docker e Portainer**.
