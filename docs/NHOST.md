@@ -61,8 +61,10 @@ O ranking coletivo da nova view usa somente partidas verificadas pelo backend. O
 
 1. Auth: conta, verificacao, login e logout.
 2. Banco + GraphQL: grava e consulta de partida, visivel no Postgres/Hasura.
-3. Storage: arquivo privado aparece no bucket personal.
-4. Realtime: duas abas recebem atualizacoes sem refresh.
+3. Realtime: duas abas recebem atualizacoes sem refresh.
+4. **Functions**: API `/challenge` verifica token, avalia respostas e incrementa resultado no servidor.
+
+**Storage** continua como um quinto recurso complementar (upload privado, bucket `personal`). Nenhuma integracao pode ser declarada concluida antes da demonstracao real.
 
 Teste duas contas diferentes para demonstrar isolamento de registros e arquivos.
 Nao anuncie os quatro recursos como comprovados ate a demo funcionar de fato.
