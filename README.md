@@ -11,9 +11,9 @@ exigem que a integração do Nhost esteja configurada e publicada conforme [as i
 
 Projeto web em **Vite + Babylon.js**, organizado para **Nhost, GitHub Pages, Docker, Portainer e Oracle Cloud**.
 
-**Atualização para GitHub Pages:** portal inicial com cadastro/login antes da aventura, modos de jogo, histórico individual de pontuação no Nhost (somente com tabelas/permissões configuradas) e retorno ao portal ao pausar/concluir. O ranking de duelos verificados e a competição de dois jogadores estão implementados neste código; só estarão ativos no jogo público após configurar e publicar o backend Nhost.
+**Atualização para GitHub Pages:** portal inicial com cadastro/login antes da aventura, modos de jogo, histórico individual de pontuação no Nhost (somente com tabelas/permissões configuradas) e retorno ao portal ao pausar/concluir. O ranking global e o duelo de dois jogadores já estão publicados no GitHub Pages e no backend Nhost. O acesso com duas contas ainda precisa de um teste completo.
 
-> **Status real (19/11/2026):** portal e melhorias 3D publicados, **16 testes Vitest, build Vite, imagem Docker GHCR e deploy personalizado do GitHub Pages aprovados no workflow #30**. Confira em Settings → Pages se a fonte é GitHub Actions. O novo modo de competição e o ranking global estão implementados no código, com testes de backend; **não há comprovação de funcionamento remoto até aplicar a migração, as permissões e publicar a Function no Nhost**. Oracle Cloud permanece pendente.
+> **Status real (19/11/2026):** portal e melhorias 3D publicados, **16 testes Vitest, build Vite, imagem Docker GHCR e deploy personalizado do GitHub Pages aprovados no workflow #30**. Confira em Settings → Pages se a fonte é GitHub Actions. O Nhost implantou a Function `/duel`, a tabela `conquest_duels`, a view de ranking e os metadados Hasura com sucesso; o ranking público foi consultado na aplicação publicada. **Ainda falta testar a partida completa com duas contas reais e o WebSocket entre dispositivos.** Oracle Cloud permanece pendente.
 
 ## 🏰 Projeto Unity 6.3 LTS (prototipo visual URP)
 
@@ -137,7 +137,7 @@ O frontend **não pode conter admin secret**. Valores VITE_* são públicos. A p
 | GitHub Pages | **Novo portal e melhorias 3D publicados pela PR #22; confirmar fonte GitHub Actions nas configurações** |
 | Nhost Auth/GraphQL | Cliente configurado no build; cadastro, tabelas e permissões reais pendentes de validação |
 | Quatro recursos BaaS comprovados | Pendente |
-| Multiplayer real e ranking global | Código frontend/backend e testes disponíveis; deploy Nhost e teste remoto pendentes |
+| Multiplayer real e ranking global | Frontend e backend publicados; ranking público consultado com sucesso; teste de duas contas e WebSocket pendente |
 | Oracle/Portainer com HTTPS | Pendente |
 
 **Não confundir:** GitHub Pages permite demonstrar o jogo no navegador, mas a atividade também exige a publicação em **VPS Oracle com Docker e Portainer**.
