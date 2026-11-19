@@ -47,17 +47,51 @@
     </div>
   </div>
 
-  <div id="intro-overlay" class="screen-overlay">
+  <div id="intro-overlay" class="screen-overlay portal-page">
     <div class="intro-backdrop"><div class="glow one"></div><div class="glow two"></div></div>
-    <div class="intro-content">
-      <div class="intro-kicker">UMA AVENTURA DE CONJUNTOS • RPG 3D</div>
-      <h1>CON<span>QUEST</span></h1>
-      <p>Um vale em desequilíbrio. Três guardiões ancestrais. Uma jornada em que <strong>seu conhecimento é sua arma.</strong></p>
-      <div class="intro-features"><span>⚔ Batalhas matemáticas</span><span>◈ Mundo para explorar</span><span>✦ Cristais mágicos</span></div>
-      <button id="start-button" class="primary-button">INICIAR AVENTURA <span>➜</span></button>
-      <div class="intro-help">WASD para mover • Shift para correr • E para interagir</div>
+    <div class="portal-shell">
+      <nav class="portal-navigation" aria-label="Navegação da página inicial">
+        <div class="portal-logo"><span>✦</span><div><strong>CONQUEST</strong><small>A JORNADA DOS CONJUNTOS</small></div></div>
+        <div class="portal-nav-actions">
+          <span id="portal-account-status" class="portal-account-status">Explorador visitante</span>
+          <button id="portal-account-open" type="button" class="portal-ghost-button">Entrar / Cadastrar</button>
+        </div>
+      </nav>
+      <main class="portal-grid">
+        <section class="intro-content" aria-labelledby="portal-title">
+          <div class="intro-kicker">✧ AVENTURA EDUCATIVA EM UM MUNDO 3D</div>
+          <h1 id="portal-title">CON<span>QUEST</span></h1>
+          <p class="portal-lead">O conhecimento transforma o destino do Vale.</p>
+          <p>Explore uma vila medieval, reúna cristais mágicos e enfrente os guardiões da <strong>Teoria dos Conjuntos</strong>. Cada resposta correta é um novo passo na jornada.</p>
+          <div class="intro-features"><span>⚔ Batalhas matemáticas</span><span>◇ Mundo 3D explorável</span><span>✦ Missões e cristais</span></div>
+          <div class="portal-cta-row">
+            <button id="start-button" class="primary-button">INICIAR AVENTURA <span>➜</span></button>
+            <button id="portal-cloud-open" type="button" class="portal-ghost-button">☁ Minha conta e ranking</button>
+          </div>
+          <p class="portal-guest-note">Você pode jogar sem conta. Se o Nhost estiver configurado, entre para salvar e consultar seu histórico de partidas.</p>
+          <div class="portal-journey"><span><b>01</b> Conheça Liora</span><span><b>02</b> Reúna 3 cristais</span><span><b>03</b> Enfrente os guardiões</span><span><b>04</b> Desafie Cael</span></div>
+          <div class="intro-help">WASD para mover · Shift para correr · E para interagir · Q/R para câmera</div>
+        </section>
+        <aside class="portal-sidebar" aria-label="Ranking e modos de jogo">
+          <section class="portal-card" aria-labelledby="portal-ranking-title">
+            <div class="portal-card-heading">
+              <div><small class="eyebrow">SEU PROGRESSO NA NUVEM</small><h2 id="portal-ranking-title">🏆 Suas melhores partidas</h2></div>
+              <button id="portal-ranking-refresh" class="portal-small-button" type="button" aria-label="Atualizar ranking">↻</button>
+            </div>
+            <ol id="portal-ranking-list" class="portal-ranking-list" aria-live="polite"><li>Entre na sua conta para consultar seu histórico.</li></ol>
+            <p id="portal-ranking-status" class="portal-status">Pontuações da jornada 3D são demonstrativas; ranking global verificado está em desenvolvimento.</p>
+          </section>
+          <section class="portal-card portal-modes" aria-labelledby="portal-modes-title">
+            <small class="eyebrow">ESCOLHA COMO JOGAR</small>
+            <h2 id="portal-modes-title">Modos de aventura</h2>
+            <div class="portal-mode"><span class="portal-mode-symbol">⚔</span><div><strong>Jornada 3D</strong><small>Explore o Vale, resolva desafios e enfrente Cael.</small></div><span class="portal-mode-tag">Disponível</span></div>
+            <div class="portal-mode"><span class="portal-mode-symbol">✦</span><div><strong>Desafio da Nuvem</strong><small>Questões validadas no servidor: em preparação.</small></div><span class="portal-mode-tag">Em breve</span></div>
+            <p class="portal-status">Duelo online de dois jogadores: em desenvolvimento.</p>
+          </section>
+        </aside>
+      </main>
+      <footer class="portal-footer"><span>GRUPO 08 · DESENVOLVIMENTO DE SOFTWARE EM NUVEM · UNIFOR</span><span>Vite + Babylon.js + Nhost</span></footer>
     </div>
-    <div class="intro-edge">GRUPO 08 · DESENVOLVIMENTO DE SOFTWARE EM NUVEM</div>
   </div>
 
   <div id="dialogue-overlay" class="screen-overlay hidden">
@@ -84,6 +118,7 @@
       <div class="end-stat-row"><div><b id="end-score">0</b><span>PONTOS</span></div><div><b id="end-correct">0</b><span>ACERTOS</span></div></div>
       <div id="cloud-save-message" class="cloud-save-message"></div>
       <button id="end-restart" class="primary-button">JOGAR NOVAMENTE ➜</button>
+      <button id="end-home" class="secondary-button">VOLTAR AO PORTAL</button>
     </div>
   </div>
   <div id="pause-overlay" class="screen-overlay hidden">
@@ -91,12 +126,14 @@
       <p>Continue quando estiver preparado para explorar o Vale dos Conjuntos.</p>
       <button id="resume-button" class="primary-button">CONTINUAR ➜</button>
       <button id="restart-button" class="secondary-button">REINICIAR AVENTURA</button>
+      <button id="pause-home" class="secondary-button">VOLTAR AO PORTAL</button>
     </div>
   </div>
   <div class="cloud-modal hidden" id="cloud-modal"><div class="cloud-modal-inner panel">
     <button class="icon-button close-cloud" id="close-cloud">×</button>
     <small class="eyebrow">CONEXÃO COM A NUVEM</small>
-    <h2>Conta e ranking</h2><p id="cloud-description">Conecte seu projeto Nhost para registrar o progresso.</p>
+    <h2>Conta e partidas</h2><p id="cloud-description">Conecte seu projeto Nhost para registrar o progresso.</p>
+    <p id="cloud-project" class="cloud-project" aria-live="polite"></p>
     <form id="cloud-login-form"><input id="cloud-email" type="email" placeholder="Seu e-mail" autocomplete="email" required/><input id="cloud-password" type="password" placeholder="Sua senha" autocomplete="current-password" required minlength="8"/>
       <div class="cloud-actions"><button class="primary-button" type="submit" data-action="login">ENTRAR</button><button type="button" class="secondary-button" id="cloud-register">CRIAR CONTA</button></div>
     </form>
@@ -112,7 +149,7 @@
       <button id="cloud-upload-proof" class="secondary-button" type="button">ENVIAR AO NHOST</button>
       <p id="cloud-storage-status" role="status"></p>
     </section>
-    <p class="cloud-message" id="cloud-message"></p>
+    <p class="cloud-message" id="cloud-message" role="status" aria-live="polite"></p>
   </div></div>
   <button id="cloud-open" class="cloud-open" aria-label="Abrir conexão Nhost" title="Nhost: conta e ranking">☁ Conta / Ranking</button>
 </div>
