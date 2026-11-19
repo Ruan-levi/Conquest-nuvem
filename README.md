@@ -6,7 +6,7 @@ Projeto web em **Vite + Babylon.js**, organizado para **Nhost, GitHub Pages, Doc
 
 **Atualização para GitHub Pages:** portal inicial com cadastro/login antes da aventura, modos de jogo, histórico individual de pontuação no Nhost (somente com tabelas/permissões configuradas) e retorno ao portal ao pausar/concluir. O desafio verificado global continua na PR #15 e **ainda não foi publicado na `main`**.
 
-> **Status real:** código de reconstrução publicado. **10 testes Vitest, compilação Vite, build Docker e deploy personalizado do GitHub Pages passaram no GitHub Actions**. Por segurança, confira em Settings → Pages se a fonte é GitHub Actions (há também um fluxo Jekyll automático da branch); Nhost e Oracle Cloud ainda precisam de contas/configuração. O modo multiplayer online não está implementado nesta versão.
+> **Status real (19/11/2026):** portal e melhorias 3D publicados, **16 testes Vitest, build Vite, imagem Docker GHCR e deploy personalizado do GitHub Pages aprovados no workflow #30**. Confira em Settings → Pages se a fonte é GitHub Actions (há também um fluxo Jekyll automático da branch). O cliente Nhost está configurado no build, mas o cadastro e as políticas ainda carecem de comprovação; Oracle Cloud e multiplayer online seguem pendentes.
 
 ## 🏰 Projeto Unity 6.3 LTS (prototipo visual URP)
 
@@ -109,6 +109,7 @@ O frontend **não pode conter admin secret**. Valores VITE_* são públicos. A p
 - [Conferência do trabalho final](docs/TRABALHO_FINAL.md)
 - [Organização dos módulos, melhorias visuais e checklist de QA](docs/ORGANIZACAO_E_QA.md)
 - [Roteiro de gravação e entrega do vídeo obrigatório no AVA](docs/ROTEIRO_VIDEO_FINAL.md)
+- [Plano de Trabalho Revisado — incrementos, evidências, riscos e pendências](docs/PLANO_DE_TRABALHO_REVISADO.md)
 
 ### Estado de implementação
 
@@ -116,9 +117,9 @@ O frontend **não pode conter admin secret**. Valores VITE_* são públicos. A p
 |---|---|
 | Jogabilidade matemática e progressão | Código disponível |
 | WASD corrigido, corrida, animação e navegação | Código disponível |
-| Testes Vitest e workflow CI/CD | **10 testes e build aprovados no GitHub Actions** |
-| GitHub Pages | **Deploy Vite concluído no Actions; confirmar fonte GitHub Actions nas configurações** |
-| Nhost Auth/GraphQL | Cliente preparado; ainda sem projeto conectado |
+| Testes Vitest e workflow CI/CD | **16 testes e build aprovados no workflow #30** |
+| GitHub Pages | **Novo portal e melhorias 3D publicados pela PR #22; confirmar fonte GitHub Actions nas configurações** |
+| Nhost Auth/GraphQL | Cliente configurado no build; cadastro, tabelas e permissões reais pendentes de validação |
 | Quatro recursos BaaS comprovados | Pendente |
 | Multiplayer real | Pendente |
 | Oracle/Portainer com HTTPS | Pendente |
