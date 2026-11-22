@@ -9,6 +9,10 @@ on:
 permissions:
   contents: read
 
+concurrency:
+  group: conquest-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   verify:
     name: Testes e compilacao
@@ -18,7 +22,7 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
-      - run: npm install --no-audit --no-fund
+      - run: npm ci --no-audit --no-fund
       - run: npm test
       - run: npm run build
 
@@ -39,7 +43,7 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
-      - run: npm install --no-audit --no-fund
+      - run: npm ci --no-audit --no-fund
       - name: Build para GitHub Pages
         run: npm run build
         env:
@@ -74,10 +78,29 @@ jobs:
         with:
           context: .
           push: true
-          tags: ghcr.io/ruan-levi/conquest-nuvem:latest
+          tags: |
+            ghcr.io/ruan-levi/conquest-nuvem:latest
+            ghcr.io/ruan-levi/conquest-nuvem:${{ github.sha }}
           build-args: |
             VITE_NHOST_SUBDOMAIN=${{ vars.NHOST_SUBDOMAIN }}
             VITE_NHOST_REGION=${{ vars.NHOST_REGION }}
+
+  smoke-cloud:
+    name: Verificar ranking publico Nhost
+    needs: [pages, container]
+    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main' && vars.NHOST_SUBDOMAIN != '' && vars.NHOST_REGION != ''
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Confirmar endpoint publico sem autenticar ou expor dados pessoais
+        env:
+          NHOST_SUBDOMAIN: ${{ vars.NHOST_SUBDOMAIN }}
+          NHOST_REGION: ${{ vars.NHOST_REGION }}
+        run: node scripts/smoke-cloud.mjs
 
   deploy-oci:
     name: Implantar na Oracle com Portainer (opcional)
@@ -90,4 +113,4 @@ jobs:
           PORTAINER_WEBHOOK_URL: ${{ secrets.PORTAINER_WEBHOOK_URL }}
         run: |
           test -n "$PORTAINER_WEBHOOK_URL" || (echo "Secret do webhook ausente" && exit 1)
-          curl --fail --show-error --silent --max-time 30 -X POST "$PORTAINER_WEBHOOK_URL"
+          curl --fail --show-error --silent --retry 3 --retry-all-errors --max-time 30 -X POST "$PORTAINER_WEBHOOK_URL"
