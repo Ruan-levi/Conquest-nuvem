@@ -83,6 +83,7 @@ export const cloudService = {
     return this.getUser();
   },
   async login(email, password) {
+    if (!email?.trim() || !password) throw new Error('Informe seu e-mail e sua senha.');
     const nhost = await getClient();
     const response = await nhost.auth.signInEmailPassword({ email: email.trim(), password });
     if (!response.body?.session?.user) {
@@ -91,11 +92,12 @@ export const cloudService = {
     return "Login realizado com sucesso.";
   },
   async register(email, password) {
-    if (!email?.trim() || !password || password.length < 8) {
+    const normalizedEmail = typeof email === 'string' ? email.trim() : '';
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(normalizedEmail) || !password || password.length < 8) {
       throw new Error("Informe e-mail válido e senha com no mínimo 8 caracteres.");
     }
     const nhost = await getClient();
-    const response = await nhost.auth.signUpEmailPassword({ email: email.trim(), password });
+    const response = await nhost.auth.signUpEmailPassword({ email: normalizedEmail, password });
     return response.body?.session?.user
       ? "Conta criada e conectada."
       : "Solicitação de cadastro enviada ao Nhost. Confira seu e-mail (inclusive Spam), confirme a conta e depois faça login. Veja a conta em Auth → Users no projeto indicado acima.";
