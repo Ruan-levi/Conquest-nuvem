@@ -1,3 +1,4 @@
+import './ui/entregavel5.css';
 import "./style.css";
 import { createWorld } from "./game/scene.js";
 import { createGameState, interact, acceptLioraQuest, getBattleQuestion, answerQuestion, canInteract, stageLabel, makeResult } from "./game/logic.js";
@@ -140,6 +141,7 @@ function showEnd(won) {
   $("end-correct").textContent = String(state.correct);
   $("cloud-save-message").textContent = "Resultado salvo localmente neste navegador.";
   const result = makeResult(state);
+  window.dispatchEvent(new CustomEvent('conquest:finished', {detail:{score:result.score,correct:result.correct_answers,finished:result.completed}}));
   try {
     const old = JSON.parse(localStorage.getItem("conquest-local-scores") || "[]");
     const next = [...old, result].sort((a,b) => b.score - a.score).slice(0, 15);
@@ -480,4 +482,9 @@ try {
   message.textContent = "Não foi possível iniciar os gráficos 3D. Verifique a compatibilidade WebGL do navegador e a instalação das dependências.";
   intro.querySelector(".intro-content").append(message);
   $("start-button").disabled = true;
+}
+
+// Camada React acadêmica; falhas da CDN não impedem o jogo 3D.
+if (window.React && window.ReactDOM) {
+  import('./ui/entregavel5.js').then(({mountEntregavel5})=>mountEntregavel5()).catch(error=>console.warn('Painel acadêmico indisponível',error));
 }
