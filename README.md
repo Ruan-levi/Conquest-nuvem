@@ -1,165 +1,165 @@
 # ⚔️ CONQUEST — Vale dos Conjuntos
 
-**Jogo 3D educacional de batalhas matemáticas | Desenvolvimento de Software em Nuvem — UNIFOR**
+**Jogo educacional 3D de Teoria dos Conjuntos · UNIFOR · Entregável 5 de Ambientes de Desenvolvimento de Software**
 
-## 🎮 [CLIQUE AQUI PARA JOGAR CONQUEST](https://ruan-levi.github.io/Conquest-nuvem/)
+Explore um vale medieval, encontre a anciã Liora, reúna três cristais, enfrente guardiões matemáticos e derrote Cael. O projeto web original foi **reutilizado para a Entregável 5**, acrescentando um painel React e um backend REST com SQLite na AWS.
 
-**Acesse gratuitamente pelo navegador:** https://ruan-levi.github.io/Conquest-nuvem/
+[![Conquest - CI/CD](https://github.com/Ruan-levi/Conquest-nuvem/actions/workflows/ci-cd.yml/badge.svg)](https://github.com/Ruan-levi/Conquest-nuvem/actions/workflows/ci-cd.yml)
+[![Entregável 5 - AWS](https://github.com/Ruan-levi/Conquest-nuvem/actions/workflows/aws-entregavel5.yml/badge.svg)](https://github.com/Ruan-levi/Conquest-nuvem/actions/workflows/aws-entregavel5.yml)
 
-No portal, você pode iniciar a aventura 3D sem cadastro. O duelo online e o ranking global
-exigem que a integração do Nhost esteja configurada e publicada conforme [as instruções](docs/NHOST.md).
+## 🎮 Acessar o jogo
 
-Projeto web em **Vite + Babylon.js**, organizado para **Nhost, GitHub Pages, Docker, Portainer e Oracle Cloud**.
+| Aplicação / serviço | Link |
+|---|---|
+| **Jogar CONQUEST na AWS — Entregável 5** | **[http://3.149.254.9/](http://3.149.254.9/)** |
+| **Verificar backend REST e SQLite** | [API `/api/health`](http://3.149.254.9/api/health) |
+| **Ranking da Entregável 5** | [API `/api/ranking`](http://3.149.254.9/api/ranking) |
+| Portal web original GitHub Pages | [ruan-levi.github.io/Conquest-nuvem](https://ruan-levi.github.io/Conquest-nuvem/) |
+| Registro da disciplina | [Entregavel5-Ambientes](https://github.com/Ruan-levi/Entregavel5-Ambientes) |
+| Teste da aplicação pública | [GitHub Actions — AWS](https://github.com/Ruan-levi/Conquest-nuvem/actions/workflows/aws-entregavel5.yml) |
 
-**Atualização para GitHub Pages:** portal inicial com cadastro/login antes da aventura, modos de jogo, histórico individual de pontuação no Nhost (somente com tabelas/permissões configuradas) e retorno ao portal ao pausar/concluir. O ranking global e o duelo de dois jogadores já estão publicados no GitHub Pages e no backend Nhost. O acesso com duas contas ainda precisa de um teste completo.
+> **Uso acadêmico:** a URL AWS usa **HTTP**, ainda sem HTTPS; use somente contas, senhas e informações fictícias. A instância usa IP público não reservado, que pode mudar após parada e reinício. Infraestrutura AWS pode consumir créditos ou gerar custos.
 
-> **Status real (19/11/2026):** portal e melhorias 3D publicados, **16 testes Vitest, build Vite, imagem Docker GHCR e deploy personalizado do GitHub Pages aprovados no workflow #30**. Confira em Settings → Pages se a fonte é GitHub Actions. O Nhost implantou a Function `/duel`, a tabela `conquest_duels`, a view de ranking e os metadados Hasura com sucesso; o ranking público foi consultado na aplicação publicada. **Ainda falta testar a partida completa com duas contas reais e o WebSocket entre dispositivos.** Oracle Cloud permanece pendente.
+## 📋 Funcionalidades
 
-## 🏰 Projeto Unity 6.3 LTS (prototipo visual URP)
+- **Jornada 3D sem login:** exploração, movimentação WASD, câmera Q/R, corrida Shift, interação E, cristais, perguntas, batalhas e pontuação.
+- **Progresso AWS (React):** cadastro e login de jogadores, edição do nome público, salvamento de pontuações, histórico e ranking de resultados gravados no SQLite.
+- **Backend REST (Node.js):** autenticação por sessão, controle de acesso `jogador` / `admin`, operações com persistência e respostas JSON.
+- **Módulos do projeto original (Nhost):** login externo, duelos de dois jogadores, ranking específico das disputas e integrações GraphQL/Storage/Realtime. A disponibilidade depende da configuração do projeto Nhost; **as contas do Nhost são independentes das contas AWS/SQLite**.
+- **Engenharia:** Git/GitHub, GitHub Actions, testes automatizados, build Vite e publicação adicional do frontend via GitHub Pages/GHCR.
 
-Existe uma trilha **separada** em [unity-remake/ConquestUnity](unity-remake/ConquestUnity/README.md),
-com scripts Unity C#, gerador de cena 3D de vila medieval, terrenos PBR,
-iluminacao, camera em terceira pessoa e cristais coletaveis. A cena precisa
-ser **gerada e validada no Unity Editor** por Tools > Conquest > Gerar cenario 3D URP.
-A estrutura Unity ainda nao foi compilada em Unity nem convertida em executavel Windows;
-a jogabilidade academica e o Nhost/Oracle continuam na aplicacao web.
+A equipe da **Entregável 5 tem duas pessoas**, e a aplicação implementa mais do que as quatro transações mínimas previstas. Consulte a [matriz de requisitos](docs/ENTREGAVEL5.md).
 
-## 🎓 Entregável 5 — Ambientes de Desenvolvimento de Software
+## 🛠️ Linguagens e tecnologias utilizadas
 
-O Conquest também é a aplicação oficial da Entregável 5 (equipe de dois integrantes). Mantivemos a campanha 3D original e adicionamos uma camada acadêmica em **React** para contas e progresso, com API **Node.js REST**, banco **SQLite** e autenticação com papéis. O Nhost permanece como sistema independente dos duelos online existentes.
+| Tecnologia | Função | Onde estudar o código |
+|---|---|---|
+| **HTML5** | Portal, formulários, HUD e canvas | [`index.html`](index.html) |
+| **CSS3** | Estilo e interface responsiva | [`src/style.css`](src/style.css), [`src/ui/entregavel5.css`](src/ui/entregavel5.css) |
+| **JavaScript (ES Modules)** | Lógica da jornada, eventos e regras | [`src/main.js`](src/main.js), [`src/game/logic.js`](src/game/logic.js) |
+| **Babylon.js / WebGL** | Cenários, câmera, iluminação e objetos 3D | [`src/game/scene.js`](src/game/scene.js) |
+| **React 18** | Painel de conta, progresso e ranking AWS | [`src/ui/entregavel5.js`](src/ui/entregavel5.js) |
+| **Node.js 22** | API REST e entrega do frontend compilado | [`server/index.mjs`](server/index.mjs) |
+| **SQL / SQLite** | Jogadores, tokens, histórico e pontuação | [`server/service.mjs`](server/service.mjs) |
+| **Vite / npm / Vitest** | Desenvolvimento, compilação e testes | [`package.json`](package.json), [`vite.config.js`](vite.config.js) |
+| **YAML / GitHub Actions** | Testes, build e verificação de publicação | [`.github/workflows/`](.github/workflows/) |
 
-**[Matriz de requisitos, transações, estrutura do banco e serviços da Entregável 5](docs/ENTREGAVEL5.md)**.
+O protótipo **Unity/C#** está em [`unity-remake/`](unity-remake/) e **não integra o jogo web publicado**. O [Dockerfile](Dockerfile) e [docker-compose.yml](docker-compose.yml) do projeto original publicam **o frontend estático**, não o backend SQLite da AWS. O servidor REST usa a API HTTP nativa do Node.js, sem Express.
 
-**[▶ JOGAR CONQUEST NA AWS (ENTREGÁVEL 5)](http://3.149.254.9/)**  
-**[Verificar API REST / SQLite](http://3.149.254.9/api/health)**  
-**[Comprovação externa do GitHub Actions](https://github.com/Ruan-levi/Conquest-nuvem/actions/runs/45266190687)**
+**[Explicação detalhada de cada linguagem, módulo e exemplos de código](docs/ARQUITETURA_E_CODIGO.md)**
 
-Hospedagem: Amazon EC2 `t3.micro` em `us-east-2`, Node.js e SQLite (EBS); frontend Vite, Babylon.js e painel React. O endereço usa **HTTP**, apenas para demonstração com dados fictícios. O IP poderá mudar ao parar e reiniciar a instância. O antigo CantinaFlow foi desativado na mesma instância e seus arquivos preservados.
+## 🗂️ Estrutura do repositório
 
-## 🎮 Acessar e executar
+```text
+Conquest-nuvem/
+├── index.html                  # Portal e canvas 3D
+├── src/
+│   ├── main.js                 # Aventura, controles e eventos
+│   ├── style.css               # Interface principal
+│   ├── game/                   # Lógica, cenários, questões e mundo
+│   ├── ui/                     # Duelo e painel React da Entregável 5
+│   └── services/nhost.js       # Integração Nhost original
+├── server/
+│   ├── index.mjs               # Servidor Node.js HTTP / API REST
+│   └── service.mjs             # Autenticação, regras e SQLite
+├── tests/                      # Testes do jogo, duelo e Entregável 5
+├── scripts/                    # Verificações públicas e de API
+├── docs/                       # Documentação acadêmica e técnica
+├── functions/                  # Function de duelos Nhost
+├── nhost/migrations/           # SQL PostgreSQL da integração Nhost
+├── infra/oci/                  # Alternativa anterior Oracle/Portainer
+├── unity-remake/               # Protótipo Unity separado
+├── .github/workflows/          # Testes, builds e verificações AWS
+├── package.json
+├── vite.config.js
+├── Dockerfile
+└── docker-compose.yml
+```
 
-- **Código-fonte:** https://github.com/Ruan-levi/Conquest-nuvem
-- **GitHub Actions:** https://github.com/Ruan-levi/Conquest-nuvem/actions
-- **Endereço do Pages informado pelo workflow de deploy bem-sucedido:** https://ruan-levi.github.io/Conquest-nuvem/
+## 💻 Como instalar e executar
 
-Instale **Node.js 22.12+** e npm:
+**Pré-requisitos:** Git, Node.js 22.12+ e npm. O navegador precisa suportar WebGL e acessar a CDN React para exibir o painel complementar.
 
-~~~bash
+### 1. Baixar e iniciar o jogo (frontend Vite)
+
+```bash
 git clone https://github.com/Ruan-levi/Conquest-nuvem.git
 cd Conquest-nuvem
-npm install
+npm ci
 npm run dev
-~~~
+```
 
-Abra a URL indicada pelo Vite, geralmente http://localhost:5173/.
+Abra o endereço exibido pelo Vite, normalmente `http://localhost:5173`. Esse modo serve o **frontend**, mas não inicializa o backend SQLite.
 
-~~~bash
+### 2. Testar, compilar e executar a aplicação completa
+
+```bash
 npm test
 npm run build
-npm run preview
-~~~
+```
 
-## 🎮 Controles aprimorados
+Em **Linux/macOS**, por exemplo:
 
-| Tecla | Função |
+```bash
+mkdir -p data
+CONQUEST_DB="$PWD/data/conquest.sqlite" CONQUEST_DIST="$PWD/dist" PORT=4000 node server/index.mjs
+```
+
+Abra `http://127.0.0.1:4000/`. Em Windows, consulte os comandos PowerShell no [guia de configuração e execução](docs/CONFIGURACAO_E_EXECUCAO.md).
+
+**Variáveis:** `CONQUEST_DB` (banco), `CONQUEST_DIST` (arquivos estáticos), `PORT` (porta) e, opcionalmente, `CONQUEST_ADMIN_USER` e `CONQUEST_ADMIN_PASSWORD` (semente inicial de administrador). Não publique senhas ou tokens.
+
+## ☁️ Publicação na AWS
+
+A versão da **Entregável 5** está em uma instância EC2 `t3.micro`, **us-east-2 (Ohio)**, com:
+
+- **Amazon Linux 2023**, Nginx na **porta 80** e Node.js no loopback **127.0.0.1:4000**.
+- Frontend gerado em `/opt/conquest/dist`; código do servidor em `/opt/conquest/server/`.
+- Banco SQLite em `/var/lib/conquest/conquest.sqlite` persistido no volume EBS.
+- Acesso administrativo à instância por **AWS Systems Manager / Session Manager**.
+- Verificações externas da página, API, ranking e controle de acesso no GitHub Actions.
+
+**[Configuração da EC2, comandos de criação, inicialização, atualização, testes e monitoramento](docs/CONFIGURACAO_E_EXECUCAO.md)**
+
+> A CI compila e testa, e o workflow AWS verifica a URL publicada. **O deploy na EC2 ainda é manual**: atualizar Git, rodar `npm ci`, `npm test`, `npm run build` e reiniciar `conquest`. Não confundir aprovação do workflow com atualização automática do servidor.
+
+## 🧪 Testes
+
+```bash
+npm test
+npm run build
+```
+
+- Vitest: lógica da campanha, interações e integração Nhost simulada.
+- `node:test`: fluxo de duelo e operações da API REST/SQLite (cadastro, login, ranking, perfil e permissões).
+- `scripts/live-check.mjs`: cenário de integração de verdade, **cria registros fictícios** no SQLite quando executado em servidor de demonstração.
+- GitHub Actions: build, testes, GitHub Pages, GHCR e verificação pública da AWS.
+
+**[Serviços REST, modelos SQL, exemplos de requisições e transações por integrante](docs/API_E_BANCO.md)**
+
+## 📖 Índice completo de documentação
+
+| Guia | Conteúdo |
 |---|---|
-| **W / S** | Avançar / recuar (W = frente; S = trás, sem inversão) |
-| **A / D** | Esquerda / direita, relativas à câmera |
-| **Shift** | Corrida com animação dos braços e pernas |
-| **Q / R** | Girar câmera |
-| **E** | Conversar, coletar cristais, iniciar combate |
-| **1 a 4** | Selecionar a resposta nas batalhas |
-| **Esc** | Pausar |
-| **Celular** | Botões na tela para movimentação, corrida e ação |
+| [**Arquitetura e códigos**](docs/ARQUITETURA_E_CODIGO.md) | Linguagens, estrutura de pastas, trechos de código e fluxo de dados |
+| [**Configuração e execução**](docs/CONFIGURACAO_E_EXECUCAO.md) | Git, npm, Vite, Node.js, EC2, Nginx, AWS e testes |
+| [**API e banco de dados**](docs/API_E_BANCO.md) | REST, SQLite, autenticação e E/S das transações |
+| [**Entregável 5**](docs/ENTREGAVEL5.md) | Requisitos da disciplina e divisão das transações |
+| [Plano de trabalho](docs/PLANO_DE_TRABALHO_REVISADO.md) | Histórico de desenvolvimento do CONQUEST original |
+| [Nhost](docs/NHOST.md) | Configuração do projeto externo |
+| [Duelos Nhost](docs/NHOST_DUELOS.md) | Function, permissões e ranking de duelo |
+| [Validação técnica](docs/VALIDACAO_FINAL.md) | Limites de validação do trabalho original |
+| [Publicação Oracle/Portainer](docs/PUBLICACAO.md) | Alternativa do trabalho original, não o deploy AWS atual |
+| [Protótipo Unity](unity-remake/README.md) | Experimento visual independente |
 
-**A orientação durante a história inclui**: painel de objetivo, seta giratória, distância até o destino, marcador flutuante no mundo 3D e pontos luminosos indicando o caminho.
+## ⚠️ Limitações conhecidas
 
-## 🌿 A história
+1. AWS usa **HTTP**, não HTTPS. Faça a demonstração apenas com **contas de teste**.
+2. A pontuação da campanha é calculada no cliente; o ranking da Entregável 5 é acadêmico, **não antifraude**.
+3. A integração de duelos **Nhost** depende de serviço externo e validação com duas contas; não é o banco SQLite da Entregável 5.
+4. Ainda não foi realizada uma verificação visual completa de todas as cenas WebGL nos navegadores/dispositivos finais.
+5. EC2, EBS, IPv4 e transferência de dados podem gerar cobrança dependendo do plano, dos créditos e do uso.
 
-1. Encontre **Liora** na vila.
-2. Reúna os **três cristais do conhecimento**.
-3. Derrote os Guardiões de **União, Interseção e Complemento** resolvendo questões de conjuntos.
-4. Siga até o castelo e enfrente **Cael, o Excludente**.
-5. Conclua a partida e veja vida, pontuação e respostas corretas.
+---
 
-**Observação sobre o Unity:** a versão anteriormente enviada era compilada para Windows. Esta reconstrução web usa modelos/cenários gerados em Babylon.js, não uma conversão automática do executável ou uma importação fiel dos rigs originais.
-
-## 🗂️ Organização do repositório
-
-~~~text
-src/
-  main.js                 Controles, HUD, menus e desafios
-  style.css               Interface e controles móveis
-  game/
-    scene.js              Mundo 3D, personagem e animações
-    world-map.js          Mapa e destinos da missão
-    logic.js              Regras, combate, vidas e movimento
-    questions.js          Perguntas de conjuntos
-  services/
-    nhost.js              Auth e GraphQL opcionais
-  ui/
-    duel.js               Sala online, perguntas e placar
-functions/
-  duel.js                 Validacao de duelos no servidor Nhost
-  _shared/duel-questions.js  Gabarito privado dos duelos
-nhost/migrations/
-  002_conquest_duels.sql  Estrutura de duelos e ranking verificado
-tests/
-  logic.test.js           Testes da movimentação e progressão
-  server/duel.node.mjs    Fluxo simulado de duas contas e anti-replay
-docs/
-  NHOST.md                Configuração do BaaS e permissões
-  PUBLICACAO.md           Passos para Pages e Oracle Cloud
-  TRABALHO_FINAL.md       Conformidade acadêmica
-.github/workflows/
-  ci-cd.yml               CI, Pages, GHCR e Portainer
-Dockerfile
-docker-compose.yml
-~~~
-
-## ☁️ Integrações em nuvem
-
-**Atualização 11/11/2026 (branch de integração):** UI Conta/Ranking inclui histórico individual de pontuações via GraphQL, upload privado no Nhost Storage e subscription GraphQL Realtime; a migração SQL e permissões ainda precisam ser aplicadas num projeto real. Para Oracle/Portainer, consulte infra/oci/README.md. Sem credenciais/instância, não há deploy real na VPS.
-
-
-- **Nhost:** serviço opcional de autenticação e GraphQL. Exige configurar projeto, tabela e políticas Hasura.
-- **GitHub Pages:** site estático após ativar o workflow em Settings → Pages.
-- **GHCR:** imagem Docker automatizada após testes bem-sucedidos.
-- **Oracle Cloud/Portainer:** VPS, HTTPS e atualização automática após a configuração das contas.
-
-O frontend **não pode conter admin secret**. Valores VITE_* são públicos. A pontuação é calculada no navegador nesta etapa e **não deve ser considerada confiável para competições até existir validação no servidor**.
-
-## 📚 Documentação
-
-- [Conectar o Nhost](docs/NHOST.md)
-- [Ativar ranking global e duelos de dois jogadores no Nhost](docs/NHOST_DUELOS.md)
-- [Publicar Pages e Oracle/Portainer](docs/PUBLICACAO.md)
-- [Conferência do trabalho final](docs/TRABALHO_FINAL.md)
-- [Organização dos módulos, melhorias visuais e checklist de QA](docs/ORGANIZACAO_E_QA.md)
-- [Roteiro de gravação e entrega do vídeo obrigatório no AVA](docs/ROTEIRO_VIDEO_FINAL.md)
-- [Plano de Trabalho Revisado — incrementos, evidências, riscos e pendências](docs/PLANO_DE_TRABALHO_REVISADO.md)
-
-### Estado de implementação
-
-| Funcionalidade | Estado |
-|---|---|
-| Jogabilidade matemática e progressão | Código disponível |
-| WASD corrigido, corrida, animação e navegação | Código disponível |
-| Testes Vitest e workflow CI/CD | **16 testes e build aprovados no workflow #30** |
-| GitHub Pages | **Novo portal e melhorias 3D publicados pela PR #22; confirmar fonte GitHub Actions nas configurações** |
-| Nhost Auth/GraphQL | Cliente configurado no build; cadastro, tabelas e permissões reais pendentes de validação |
-| Quatro recursos BaaS comprovados | Pendente |
-| Multiplayer real e ranking global | Frontend e backend publicados; ranking público consultado com sucesso; teste de duas contas e WebSocket pendente |
-| Oracle/Portainer com HTTPS | Pendente |
-
-**Não confundir:** GitHub Pages permite demonstrar o jogo no navegador, mas a atividade também exige a publicação em **VPS Oracle com Docker e Portainer**.
-
-## ✅ Primeira execução automatizada verificada
-
-O workflow de **11/11/2026** executou o teste automatizado (**10 aprovados**), o build de produção Vite, a publicação da imagem Docker no GHCR e o deploy de Vite no GitHub Pages, todos com **conclusão de sucesso**. [Ver execução oficial](https://github.com/Ruan-levi/Conquest-nuvem/actions/runs/43043313992).
-
-**Limite da verificação:** essa evidência confirma build, testes unitários e deploy, mas não comprova que cada cena WebGL e cada controle foram testados visualmente em um navegador real. A validação de Nhost e OCI continua pendente.
-
-## 🤝 Melhorias futuras
-
-Ao solicitar alterações, podemos modificar o código no GitHub, documentar a mudança e conferir o resultado no Actions. Próximas prioridades: validar WebGL/browser, resolver colisões e desempenho, conectar Nhost, implementar Storage e sincronização em tempo real, e concluir a publicação Oracle com evidências acadêmicas.
+**CONQUEST · Projeto educacional da UNIFOR · Repositório principal do jogo e documentação da Entregável 5.**
