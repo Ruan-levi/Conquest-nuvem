@@ -30,7 +30,11 @@ O Conquest também é a aplicação oficial da Entregável 5 (equipe de dois int
 
 **[Matriz de requisitos, transações, estrutura do banco e serviços da Entregável 5](docs/ENTREGAVEL5.md)**.
 
-A URL AWS será registrada aqui após a validação do deploy.
+**[▶ JOGAR CONQUEST NA AWS (ENTREGÁVEL 5)](http://3.149.254.9/)**  
+**[Verificar API REST / SQLite](http://3.149.254.9/api/health)**  
+**[Comprovação externa do GitHub Actions](https://github.com/Ruan-levi/Conquest-nuvem/actions/runs/45266190687)**
+
+Hospedagem: Amazon EC2 `t3.micro` em `us-east-2`, Node.js e SQLite (EBS); frontend Vite, Babylon.js e painel React. O endereço usa **HTTP**, apenas para demonstração com dados fictícios. O IP poderá mudar ao parar e reiniciar a instância. O antigo CantinaFlow foi desativado na mesma instância e seus arquivos preservados.
 
 ## 🎮 Acessar e executar
 
