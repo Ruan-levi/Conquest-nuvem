@@ -7,7 +7,7 @@
     "dev": "vite --host 0.0.0.0",
     "build": "vite build",
     "preview": "vite preview --host 0.0.0.0",
-    "test": "vitest run && node --test tests/server/*.node.mjs",
+    "test": "vitest run && node --test tests/server/*.node.mjs tests/entregavel5.node.mjs",
     "smoke:cloud": "node scripts/smoke-cloud.mjs",
     "test:watch": "vitest"
   },
