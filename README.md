@@ -24,6 +24,14 @@ ser **gerada e validada no Unity Editor** por Tools > Conquest > Gerar cenario 3
 A estrutura Unity ainda nao foi compilada em Unity nem convertida em executavel Windows;
 a jogabilidade academica e o Nhost/Oracle continuam na aplicacao web.
 
+## 🎓 Entregável 5 — Ambientes de Desenvolvimento de Software
+
+O Conquest também é a aplicação oficial da Entregável 5 (equipe de dois integrantes). Mantivemos a campanha 3D original e adicionamos uma camada acadêmica em **React** para contas e progresso, com API **Node.js REST**, banco **SQLite** e autenticação com papéis. O Nhost permanece como sistema independente dos duelos online existentes.
+
+**[Matriz de requisitos, transações, estrutura do banco e serviços da Entregável 5](docs/ENTREGAVEL5.md)**.
+
+A URL AWS será registrada aqui após a validação do deploy.
+
 ## 🎮 Acessar e executar
 
 - **Código-fonte:** https://github.com/Ruan-levi/Conquest-nuvem
