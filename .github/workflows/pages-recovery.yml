@@ -1,0 +1,86 @@
+name: CONQUEST - recuperar GitHub Pages (Vite + Nhost)
+
+# O projeto ainda tem um workflow automatico "pages build and deployment"
+# (Jekyll/branch). Quando ele sobrescreve o Pages com arquivos-fonte,
+# publicamos novamente o bundle Vite correto. Recomenda-se ajustar Settings
+# > Pages > Source para GitHub Actions e eliminar a concorrencia definitivamente.
+on:
+  workflow_run:
+    workflows: ["pages build and deployment"]
+    types: [completed]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: conquest-recuperar-pages
+  cancel-in-progress: true
+
+jobs:
+  prepare:
+    name: Compilar site Nhost e preparar artefato
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      (github.event.workflow_run.conclusion == 'success' &&
+       github.event.workflow_run.head_branch == 'main' &&
+       github.event.workflow_run.head_repository.full_name == github.repository)
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - run: npm ci --no-audit --no-fund
+      - run: npm test
+      - name: Compilar CONQUEST para o subdiretorio GitHub Pages
+        run: npm run build
+        env:
+          GITHUB_PAGES: 'true'
+          VITE_NHOST_SUBDOMAIN: ${{ vars.NHOST_SUBDOMAIN }}
+          VITE_NHOST_REGION: ${{ vars.NHOST_REGION }}
+      - name: Validar que este e o jogo 3D Nhost compilado
+        run: node scripts/check-nhost-build.mjs
+        env:
+          NHOST_SUBDOMAIN: ${{ vars.NHOST_SUBDOMAIN }}
+          NHOST_REGION: ${{ vars.NHOST_REGION }}
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v4
+        with:
+          path: ./dist
+
+  deploy:
+    name: Restaurar CONQUEST no Pages
+    needs: prepare
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/deploy-pages@v4
+        id: deployment
+
+  live-check:
+    name: Conferir que o Pages serve o jogo compilado
+    needs: deploy
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          persist-credentials: false
+      - name: Verificar HTML e JavaScript publicados
+        run: node scripts/check-pages-live.mjs
+        env:
+          CONQUEST_PAGES_URL: https://ruan-levi.github.io/Conquest-nuvem/
