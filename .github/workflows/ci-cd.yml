@@ -26,18 +26,13 @@ jobs:
       - run: npm test
       - run: npm run build
 
-  pages:
-    name: GitHub Pages
+  pages-build:
+    name: Preparar GitHub Pages (Vite + Nhost)
     needs: verify
     if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     permissions:
       contents: read
-      pages: write
-      id-token: write
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -68,7 +63,21 @@ jobs:
       - uses: actions/upload-pages-artifact@v4
         with:
           path: ./dist
-      - name: Deploy Pages
+  
+  pages-deploy:
+    name: Publicar GitHub Pages
+    needs: pages-build
+    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Publicar artefato preparado no job anterior
         id: deployment
         uses: actions/deploy-pages@v4
 
@@ -101,7 +110,7 @@ jobs:
 
   smoke-cloud:
     name: Verificar ranking publico Nhost
-    needs: [pages, container]
+    needs: verify
     if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     timeout-minutes: 3
