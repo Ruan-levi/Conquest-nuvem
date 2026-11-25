@@ -82,6 +82,9 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
       - name: Aguardar build Jekyll concorrente terminar
         run: node scripts/wait-legacy-pages.mjs
         env:
