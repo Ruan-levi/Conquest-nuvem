@@ -44,12 +44,26 @@ jobs:
         with:
           node-version: '22'
       - run: npm ci --no-audit --no-fund
+      - name: Verificar configuracao publica do Nhost
+        env:
+          NHOST_SUBDOMAIN: ${{ vars.NHOST_SUBDOMAIN }}
+          NHOST_REGION: ${{ vars.NHOST_REGION }}
+        run: |
+          test -n "$NHOST_SUBDOMAIN" && test -n "$NHOST_REGION" || {
+            echo "::error::Defina NHOST_SUBDOMAIN e NHOST_REGION em Settings > Secrets and variables > Actions > Variables."
+            exit 1
+          }
       - name: Build para GitHub Pages
         run: npm run build
         env:
           GITHUB_PAGES: 'true'
           VITE_NHOST_SUBDOMAIN: ${{ vars.NHOST_SUBDOMAIN }}
           VITE_NHOST_REGION: ${{ vars.NHOST_REGION }}
+      - name: Garantir que o build publicado usa o Nhost
+        env:
+          NHOST_SUBDOMAIN: ${{ vars.NHOST_SUBDOMAIN }}
+          NHOST_REGION: ${{ vars.NHOST_REGION }}
+        run: node scripts/check-nhost-build.mjs
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v4
         with:
@@ -88,7 +102,7 @@ jobs:
   smoke-cloud:
     name: Verificar ranking publico Nhost
     needs: [pages, container]
-    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main' && vars.NHOST_SUBDOMAIN != '' && vars.NHOST_REGION != ''
+    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     timeout-minutes: 3
     steps:
