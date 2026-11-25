@@ -25,6 +25,10 @@ jobs:
       - run: npm ci --no-audit --no-fund
       - run: npm test
       - run: npm run build
+      - name: Conferir scripts de validacao do Pages
+        run: |
+          node --check scripts/wait-legacy-pages.mjs
+          node --check scripts/check-pages-live.mjs
 
   pages-build:
     name: Preparar GitHub Pages (Vite + Nhost)
@@ -71,15 +75,33 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
+      actions: read
       pages: write
       id-token: write
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
-      - name: Publicar artefato preparado no job anterior
+      - name: Aguardar build Jekyll concorrente terminar
+        run: node scripts/wait-legacy-pages.mjs
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Publicar artefato Vite/Nhost preparado
         id: deployment
         uses: actions/deploy-pages@v4
+
+  site-check:
+    name: Confirmar jogo publico Vite/Nhost
+    needs: pages-deploy
+    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - name: Conferir HTML e assets do site publico
+        run: node scripts/check-pages-live.mjs
+        env:
+          CONQUEST_PAGES_URL: https://ruan-levi.github.io/Conquest-nuvem/
 
   container:
     name: Publicar imagem Docker GHCR
